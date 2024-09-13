@@ -12,19 +12,17 @@ def absolute(a)
 end
 
 
-def generate_square_numbers(start, stop, file_path)
+def generate_square_numbers(start_num, stop_num, file_path)
+  square_numbers = (start_num..stop_num).map { |n| n**2 }
   File.open(file_path, 'w') do |file|
-    (start..stop).each do |num|
-      file.puts(num ** 2)
-    end
+    square_numbers.each { |num| file.puts num }
   end
 end
 
 
-def generate_even_numbers(start, stop, file_path)
+def generate_even_numbers(start_num, stop_num, file_path)
+  even_numbers = (start_num..stop_num).select { |n| n.even? }
   File.open(file_path, 'w') do |file|
-    (start..stop).each do |num|
-      file.puts(num) if num.even?
-    end
+    even_numbers.each { |num| file.puts num }
   end
 end
