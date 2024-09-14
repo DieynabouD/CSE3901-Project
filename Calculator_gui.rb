@@ -16,27 +16,48 @@ result_var = TkVariable.new("Result: ")
 # Entry field where the user enters the expression
 TkEntry.new(root, 'textvariable' => input_var, 'font' => 'Arial 20', 'justify' => 'right').pack('side' => 'top', 'fill' => 'x')
 
-# Label to show the result
+
 TkLabel.new(root, 'textvariable' => result_var, 'font' => 'Arial 20').pack('side' => 'top')
+
+
+# Method to evaluate basic arithmetic expressions with exponentiation and modulo
+def evaluate_expression(input_var, result_var)
+  expression = input_var.value
+  
+  # Split the expression into numbers and operators
+  numbers = expression.scan(/\d+\.?\d*/).map(&:to_f)  # Extract numbers as floats
+  operators = expression.scan(/[\+\-\*\/\^\%]/)  # Extract operators, including ^ and %
+
+  # Initialize the result with the first number
+  result = numbers.shift
+  
+  # Loop through operators and apply each one using your custom methods
+  operators.each_with_index do |op, i|
+    case op
+    when '+'
+      result = addition(result, numbers[i])
+    when '-'
+      result = subtraction(result, numbers[i])
+    when '*'
+      result = multiply(result, numbers[i])
+    when '/'
+      result = division(result, numbers[i])
+    when '^'
+      result = exponent(result, numbers[i])
+    when '%'
+      result = modulo(result, numbers[i])
+    end
+  end
+
+  # Display the result
+  result_var.value = "Result: #{result}"
+end
 
 # Method to append to the expression when a button is pressed
 def append_expression(input_var, value)
   input_var.value = input_var.value + value
 end
 
-# Method to evaluate the expression and handle errors
-def evaluate_expression(input_var, result_var)
-  begin
-    result = eval(input_var.value) # Use eval to calculate the result
-    result_var.value = "Result: #{result}"
-  rescue ZeroDivisionError
-    result_var.value = "Error: Division by zero"
-  rescue SyntaxError
-    result_var.value = "Error: Invalid Expression"
-  rescue StandardError => e
-    result_var.value = "Error: #{e.message}"
-  end
-end
 
 # Method to clear the expression
 def clear_expression(input_var, result_var)
@@ -77,7 +98,7 @@ buttons.each do |row|
         command { evaluate_expression(input_var, result_var) }
       when 'C'
         command { clear_expression(input_var, result_var) }
-      when 'sin', 'cos', 'tan', '|x|', '^', '%', 'Square', 'Even'
+      when 'sin', 'cos', 'tan', '|x|', 'Square', 'Even'
         command do
           case char
           when 'sin'
@@ -88,10 +109,6 @@ buttons.each do |row|
             result_var.value = "Result: #{tan(input_var.value.to_f)}"
           when '|x|'
             result_var.value = "Result: #{absolute(input_var.value.to_f)}"
-          when '^'
-            result_var.value = "Result: #{exponent(input_var.value.to_f)}"
-          when '%'
-            result_var.value = "Result: #{modulo(input_var.value.to_i)}"
           end # Close case char inside the command
         end # Close command block
       when 'Squares'
