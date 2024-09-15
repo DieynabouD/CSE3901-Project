@@ -9,3 +9,4 @@ end
 def tan(n)
   Math.tan(n)
 end
+
