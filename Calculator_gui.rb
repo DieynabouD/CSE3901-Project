@@ -31,7 +31,7 @@ def evaluate_expression(input_var, result_var)
   # Initialize the result with the first number
   result = numbers.shift
   
-  # Loop through operators and apply each one using your custom methods
+  # Loop through operators and apply each operation to the result
   operators.each_with_index do |op, i|
     case op
     when '+'
