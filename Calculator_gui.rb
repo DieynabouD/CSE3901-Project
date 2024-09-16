@@ -10,6 +10,8 @@ root.minsize(600, 800)
 # Create a text variable to hold the expression entered by the user
 input_var = TkVariable.new
 
+base_var = TkVariable.new("Base: ")
+
 # Create a label to display the result
 result_var = TkVariable.new("Result: ")
 
@@ -75,13 +77,12 @@ button_frame = TkFrame.new(root).pack('side' => 'top', 'fill' => 'x')
 
 # Buttons for digits 1-9, 0, and operators
 buttons = [
-  ['7', '8', '9', '/'],
-  ['4', '5', '6', '*'],
+  ['7', '8', '9', '/','log(base,a)'],
+  ['4', '5', '6', '*','Squares' ],
   ['1', '2', '3', '-'],
   ['0', '.', '=', '+'],
   ['^', 'sin', 'cos', 'tan'],
-  ['|x|', '%', 'C', 'Even'],
-  ['Squares', 'log(base,a)']
+  ['|x|', '%', 'C', 'Even']
 ]
 
 buttons.each do |row|
@@ -110,7 +111,7 @@ buttons.each do |row|
           when '|x|'
             result_var.value = "Result: #{absolute(input_var.value.to_f)}"
           when 'log(base,a)'
-            result_var.value = "Result: #{log_with_base(gets.chomp.to_f,gets.chomp.to_f)}"
+            result_var.value = "Result: #{log_with_base(base_var.value.to_f,input_var.value.to_f)}"
           end # Close case char inside the command
         end # Close command block
       when 'Squares'
