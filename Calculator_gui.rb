@@ -3,6 +3,7 @@ require_relative 'MathFunctions'
 require_relative 'Arithmetic'
 require_relative 'BuiltMathFunctions'
 require_relative 'MathFunctions2'
+require_relative 'MathFunctions4'
 
 # Create the main window
 root = TkRoot.new { title "Advanced Calculator" }
@@ -59,8 +60,8 @@ def clear_expression(input_var, result_var)
   result_var.value = "Result: "
 end
 
-button_width = 8
-button_height = 4
+button_width = 6
+button_height = 3
 
 # Create the buttons for the calculator (numbers and operations)
 button_frame = TkFrame.new(root).pack('side' => 'top', 'fill' => 'x')
@@ -73,7 +74,8 @@ buttons = [
   ['0', '.', '=', '+'],
   ['^', 'sin', 'cos', 'tan'],
   ['|x|', '%', 'C', 'Evens'],
-  ['Squares', 'Primes', 'Binary', 'Octal', 'Hexadecimal']
+  ['Squares', 'Primes', 'Binary', 'Octal', 'Hexadecimal'], 
+  ['FtoC']
 ]
 
 buttons.each do |row|
@@ -90,7 +92,7 @@ buttons.each do |row|
         command { evaluate_expression(input_var, result_var) }
       when 'C'
         command { clear_expression(input_var, result_var) }
-      when 'sin', 'cos', 'tan', '|x|', 
+      when 'sin', 'cos', 'tan', '|x|', 'FtoC'
         command do
           case char
           when 'sin'
@@ -102,6 +104,9 @@ buttons.each do |row|
 
           when '|x|'
             result_var.value = "Result: #{absolute(input_var.value.to_f)}"
+          
+          when 'FtoC'
+            result_var.value = "Result: #{fahrenheit_to_celsius(input_var.value.to_f)}"
           end
         end
       when 'Squares'
