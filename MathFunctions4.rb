@@ -67,6 +67,7 @@ end
  end
  end
 
+<<<<<<< HEAD
 # #function to convert fahrenheit to celsius
 def fahrenheit_to_celsius()
     puts "Please enter your fahrenheit value: "
@@ -76,3 +77,10 @@ def fahrenheit_to_celsius()
     result=a*(fraction)
     puts "Celsius result: #{format("%.2f",result)}"
 end
+=======
+# Function to convert Fahrenheit to Celsius
+def fahrenheit_to_celsius(f)
+  result = (f - 32) * 5.0 / 9.0
+  format("%.2f", result)
+end
+>>>>>>> 66dbd2e1469bda669cdcaffa35854fc8a66a439e
