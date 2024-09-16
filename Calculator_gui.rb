@@ -17,9 +17,8 @@ result_var = TkVariable.new("Result: ")
 # Entry field where the user enters the expression
 TkEntry.new(root, 'textvariable' => input_var, 'font' => 'Arial 20', 'justify' => 'right').pack('side' => 'top', 'fill' => 'x')
 
-
+# Label to display result
 TkLabel.new(root, 'textvariable' => result_var, 'font' => 'Arial 20').pack('side' => 'top')
-
 
 # Method to evaluate basic arithmetic expressions with exponentiation and modulo
 def evaluate_expression(input_var, result_var)
@@ -29,10 +28,8 @@ def evaluate_expression(input_var, result_var)
   numbers = expression.scan(/\d+\.?\d*/).map(&:to_f)  # Extract numbers as floats
   operators = expression.scan(/[\+\-\*\/\^\%]/)  # Extract operators, including ^ and %
 
-  # Initialize the result with the first number
   result = numbers.shift
   
-  # Loop through operators and apply each operation to the result
   operators.each_with_index do |op, i|
     case op
     when '+'
@@ -50,7 +47,6 @@ def evaluate_expression(input_var, result_var)
     end
   end
 
-  # Display the result
   result_var.value = "Result: #{result}"
 end
 
@@ -59,14 +55,11 @@ def append_expression(input_var, value)
   input_var.value = input_var.value + value
 end
 
-
 # Method to clear the expression
 def clear_expression(input_var, result_var)
   input_var.value = ""
   result_var.value = "Result: "
 end
-
-
 
 button_width = 8
 button_height = 4
@@ -110,8 +103,8 @@ buttons.each do |row|
             result_var.value = "Result: #{tan(input_var.value.to_f)}"
           when '|x|'
             result_var.value = "Result: #{absolute(input_var.value.to_f)}"
-          end # Close case char inside the command
-        end # Close command block
+          end
+        end
       when 'Squares'
         command do
           dialog = TkToplevel.new
@@ -133,15 +126,14 @@ buttons.each do |row|
                 'defaultextension' => '.txt',
                 'filetypes' => [['Text Files', '*.txt'], ['All Files', '*']]
               )
-        
               if file_path
                 generate_square_numbers(start_num_var.value.to_i, end_num_var.value.to_i, file_path)
                 result_var.value = "Square numbers generated and saved to #{file_path}"
               end
               dialog.destroy
             end 
-          end.pack # Close TkButton
-        end # Close command block for Generate Squares
+          end.pack
+        end
       when 'Even'
         command do
           dialog = TkToplevel.new
@@ -163,51 +155,72 @@ buttons.each do |row|
                 'defaultextension' => '.txt',
                 'filetypes' => [['Text Files', '*.txt'], ['All Files', '*']]
               )
-        
               if file_path
                 generate_even_numbers(start_num_var.value.to_i, end_num_var.value.to_i, file_path)
                 result_var.value = "Even numbers generated and saved to #{file_path}"
               end
               dialog.destroy
             end 
-          end.pack # Close TkButton
-        end # Close command block for Generate Squares
+          end.pack
+        end
       else
         command { append_expression(input_var, char) }
-      end # Close case char block
-    end.pack('side' => 'left') # Close TkButton
+      end
+    end.pack('side' => 'left')
   end 
 end
 
-# File operations
-TkLabel.new(root) { text "File Operations" }.pack
+# New Buttons for Factorial, Percentage, Median, and Prime Numbers
+['Factorial', 'Percentage', 'Median', 'Prime Numbers'].each do |char|
+  row_frame = TkFrame.new(button_frame).pack('side' => 'top', 'fill' => 'x')
+  TkButton.new(row_frame) do
+    text char
+    width button_width
+    height button_height
+    font 'Arial 20'
 
-start_var = TkVariable.new
-stop_var = TkVariable.new
-file_path_var = TkVariable.new
+    case char
+    when 'Factorial'
+      command do
+        result_var.value = "Result: #{factorial(input_var.value.to_i)}"
+      end
+    when 'Percentage'
+      command do
+        a, b = input_var.value.split(',').map(&:to_f)
+        result_var.value = "Result: #{percentage(a, b)}%"
+      end
+    when 'Median'
+      command do
+        data = input_var.value.split(',').map(&:to_f)
+        result_var.value = "Result: #{median(data)}"
+      end
+    when 'Prime Numbers'
+      command do
+        dialog = TkToplevel.new
+        dialog.title = "Generate Prime Numbers"
 
-TkLabel.new(root) { text "Start Number" }.pack
-TkEntry.new(root, 'textvariable' => start_var).pack
+        TkLabel.new(dialog) { text "Enter Limit" }.pack
+        limit_var = TkVariable.new
+        TkEntry.new(dialog, 'textvariable' => limit_var).pack
 
-TkLabel.new(root) { text "Stop Number" }.pack
-TkEntry.new(root, 'textvariable' => stop_var).pack
-
-TkLabel.new(root) { text "File Path" }.pack
-TkEntry.new(root, 'textvariable' => file_path_var).pack
-
-file_operations = {
-  "Generate Square Numbers" => :generate_square_numbers,
-  "Generate Even Numbers" => :generate_even_numbers
-}
-
-file_operations.each do |operation_name, operation|
-  TkButton.new(root) do
-    text operation_name
-    command {
-      send(operation, start_var.to_i, stop_var.to_i, file_path_var.value)
-      result_var.value = "Generated #{operation_name}"
-    }
-  end.pack
+        TkButton.new(dialog) do
+          text "Save and Generate Primes"
+          command do
+            file_path = Tk.getSaveFile(
+              'title' => 'Save primes to file',
+              'defaultextension' => '.txt',
+              'filetypes' => [['Text Files', '*.txt'], ['All Files', '*']]
+            )
+            if file_path
+              generate_primes(limit_var.value.to_i, file_path)
+              result_var.value = "Prime numbers generated and saved to #{file_path}"
+            end
+            dialog.destroy
+          end
+        end.pack
+      end
+    end
+  end.pack('side' => 'left')
 end
 
 # Start the Tk main loop
