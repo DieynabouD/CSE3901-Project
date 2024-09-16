@@ -21,43 +21,76 @@ TkEntry.new(root, 'textvariable' => input_var, 'font' => 'Arial 20', 'justify' =
 TkLabel.new(root, 'textvariable' => result_var, 'font' => 'Arial 20').pack('side' => 'top')
 
 
-
-# evaluate basic arithmetic expressions 
+# Evaluate expressions including parentheses and operator precedence
 def evaluate_expression(input_var, result_var)
   expression = input_var.value
-  numbers = expression.scan(/\d+\.?\d*/).map(&:to_f)  # Extract numbers as floats
-  operators = expression.scan(/[\+\-\*\/\^\%]/)  # Extract operators, including ^ and %
-  result = numbers.shift  # Initialize the result with the first number
 
-  
-  
-  operators.each_with_index do |op, i|
-    case op
+  # Function to perform basic arithmetic
+  def apply_operator(operator, a, b)
+    case operator
     when '+'
-      result = addition(result, numbers[i])
+      return addition(a, b)
     when '-'
-      result = subtraction(result, numbers[i])
+      return subtraction(a, b)
     when '*'
-      result = multiply(result, numbers[i])
+      return multiply(a, b)
     when '/'
-      result = division(result, numbers[i])
+      return division(a, b)
     when '^'
-      result = exponent(result, numbers[i])
+      return exponent(a, b)
     when '%'
-      result = modulo(result, numbers[i])
+      return modulo(a, b)
+    else
+      raise "Unsupported operator #{operator}"
     end
   end
 
-  # Display the result
+  # Function to handle parentheses by recursion
+  def evaluate_parentheses(expression)
+    while expression.include?('(')
+      expression.sub!(/\([^()]*\)/) do |sub_expr|
+        evaluate_basic(sub_expr[1..-2])  # Remove parentheses and evaluate
+      end
+    end
+    evaluate_basic(expression)  # Evaluate the remaining expression
+  end
+
+  # Function to evaluate expressions without parentheses
+  def evaluate_basic(expression)
+    numbers = expression.scan(/\d+\.?\d*/).map(&:to_f)  # Extract numbers as floats
+    operators = expression.scan(/[\+\-\*\/\^\%]/)  # Extract operators, including ^ and %
+
+    # Handle multiplication/division first (operator precedence)
+    while operators.include?('*') || operators.include?('/')
+      operators.each_with_index do |op, i|
+        if op == '*' || op == '/'
+          result = apply_operator(op, numbers[i], numbers[i + 1])
+          numbers[i, 2] = result  # Replace the numbers with the result
+          operators.delete_at(i)  # Remove the operator
+          break  # Reevaluate the loop since the array has changed
+        end
+      end
+    end
+
+    result = numbers.shift  # Initialize the result with the first number
+    operators.each_with_index do |op, i|
+      result = apply_operator(op, result, numbers[i])
+    end
+
+    return result
+  end
+
+  # Start by evaluating parentheses, then the rest
+  result = evaluate_parentheses(expression)
   result_var.value = "Result: #{result}"
 end
 
-# append to the expression when a button is pressed
+# Append to the expression when a button is pressed
 def append_expression(input_var, value)
   input_var.value = input_var.value + value
 end
 
-# clear the expression
+# Clear the expression
 def clear_expression(input_var, result_var)
   input_var.value = ""
   result_var.value = "Result: "
