@@ -24,7 +24,7 @@ end
 
 
 #function to return the largest value from a set of numbers
-def maximum()
+def maximum(dataset)
 i=0
 a=0
 largest=0
@@ -41,7 +41,9 @@ puts "largest: #{largest}"
 end
 
  # #function to generate fibonacci numbers up to a given limit and save them to a file
- def fibonacci()
+ def fibonacci(file_path,file)
+  File.open(file_path,"w") do |file|
+  
 puts "Please give limit: "
 limit=gets.chomp().to_i
 i=1
@@ -56,6 +58,7 @@ if(limit!=0)
       b=a #b goes up to a
       a=c #a goes up to c
       i=i+1
+      file.write "#{c} "
       
   end
 else
