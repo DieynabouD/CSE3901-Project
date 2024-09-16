@@ -65,6 +65,7 @@ else
   puts "0"
 end
  end
+ end
 
 # #function to convert fahrenheit to celsius
 def fahrenheit_to_celsius()
@@ -74,4 +75,4 @@ def fahrenheit_to_celsius()
     fraction=Rational(5,9)
     result=a*(fraction)
     puts "Celsius result: #{format("%.2f",result)}"
- end
+end
