@@ -23,9 +23,10 @@ def generate_square_numbers(start_num, stop_num, file_path)
 end
 
 #Generates even numbers in the given range and writes them to a file.
-def generate_even_numbers(start_num, stop_num, file_path)
-  even_numbers = (start_num..stop_num).select { |n| n.even? }
+def generate_even_numbers(start_num, end_num, file_path)
+  evens = (start_num..end_num).select(&:even?)
   File.open(file_path, 'w') do |file|
-    even_numbers.each { |num| file.puts num }
+    evens.each { |num| file.puts num }
   end
 end
+
