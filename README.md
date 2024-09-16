@@ -8,7 +8,7 @@ Advanced Arithmetic Calculator - Project 2
 The Advanced Arithmetic Calculator is a GUI-based calculator built using the TK package for Python. 
 It performs basic arithmetic operations as well as advanced calculations such as finding squares and even numbers. 
 This project also integrates file functions that allow saving results to a file for further use.
-This project was developed by Dieynabou Diallo, Jana Abedeljaber, Noelle Marcy, ...(add name).
+This project was developed by Dieynabou Diallo, Jana Abedeljaber, Noelle Marcy, Yutong Ye.
 
 **Features**
 
@@ -24,6 +24,10 @@ List even numbers within a given range.
 Convert Fahrenheit to Celsius.
 Graphical User Interface (GUI) using the TK package for ease of use.
 File Functions: Save and load results to/from text files for squares and even numbers. Save results from fibonacci sequence.
+Check if a given number is a prime number. 
+Return the minimum from a set of numbers. 
+Generate odd numbers in a given range and then print them in a specific file.
+Find the mode of a dataset.
 
 **File Operations**
 
