@@ -41,8 +41,14 @@ Loading Results: You can load previous calculations from a file.
 **How to Run File**
 
 ---
-Type ruby Calculator_gui.rb into your terminal and the application should appear.
+Clone the repository by using command "git clone https://github.com/DieynabouD/CSE3901-Project.git". Type "ruby Calculator_gui.rb" into your terminal and the application should appear.
 
+**Branch**
 
+---
+The workflow for this project is branch-based. After working on their own branch, each team member merge their own branch into the development branch.
+1. main: The final runnable file is here. 
+2. development: This is where all the members' completed file is stored and debugged.
+3. branch1 to branch4: Each team member focuses on particular duties allocated to these branches.
 
 
