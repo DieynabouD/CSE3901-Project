@@ -1,8 +1,10 @@
+
+#this method calculates the exponent of a number.
 def exponent(a, b)
   a ** b
 end
 
-
+# This method calculates the absolute value of a number.
 def absolute(a)
   if a < 0
     -a
@@ -12,19 +14,18 @@ def absolute(a)
 end
 
 
-def generate_square_numbers(start, stop, file_path)
+# Generates square numbers in the given range and writes them to a file.
+def generate_square_numbers(start_num, stop_num, file_path)
+  square_numbers = (start_num..stop_num).map { |n| n**2 }
   File.open(file_path, 'w') do |file|
-    (start..stop).each do |num|
-      file.puts(num ** 2)
-    end
+    square_numbers.each { |num| file.puts num }
   end
 end
 
-
-def generate_even_numbers(start, stop, file_path)
+#Generates even numbers in the given range and writes them to a file.
+def generate_even_numbers(start_num, stop_num, file_path)
+  even_numbers = (start_num..stop_num).select { |n| n.even? }
   File.open(file_path, 'w') do |file|
-    (start..stop).each do |num|
-      file.puts(num) if num.even?
-    end
+    even_numbers.each { |num| file.puts num }
   end
 end
