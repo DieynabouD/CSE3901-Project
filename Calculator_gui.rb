@@ -20,12 +20,16 @@ TkEntry.new(root, 'textvariable' => input_var, 'font' => 'Arial 20', 'justify' =
 # Label to show the result
 TkLabel.new(root, 'textvariable' => result_var, 'font' => 'Arial 20').pack('side' => 'top')
 
+
+
 # evaluate basic arithmetic expressions 
 def evaluate_expression(input_var, result_var)
   expression = input_var.value
   numbers = expression.scan(/\d+\.?\d*/).map(&:to_f)  # Extract numbers as floats
   operators = expression.scan(/[\+\-\*\/\^\%]/)  # Extract operators, including ^ and %
   result = numbers.shift  # Initialize the result with the first number
+
+  
   
   operators.each_with_index do |op, i|
     case op
@@ -70,10 +74,10 @@ buttons = [
   ['7', '8', '9', '/'],
   ['4', '5', '6', '*'],
   ['1', '2', '3', '-'],
-  ['0', '.', '=', '+'],
-  ['^', 'sin', 'cos', 'tan'],
-  ['|x|', '%', 'C', 'Even'],
-  ['Squares', 'Binary', 'Octal', 'Hexadecimal']
+  ['0', '.', '=', '+', '('],
+  ['^', 'sin', 'cos', 'tan', ')'],
+  ['|x|', '%', 'C', 'Evens'],
+  ['Squares', 'Binary', 'Octal', 'Hexadecimal'],
 ]
 
 buttons.each do |row|
@@ -90,7 +94,7 @@ buttons.each do |row|
         command { evaluate_expression(input_var, result_var) }
       when 'C'
         command { clear_expression(input_var, result_var) }
-      when 'sin', 'cos', 'tan', '|x|', 'Square', 'Even'
+      when 'sin', 'cos', 'tan', '|x|', 
         command do
           case char
           when 'sin'
@@ -133,7 +137,7 @@ buttons.each do |row|
             end
           end.pack
         end
-      when 'Even'
+      when 'Evens'
         command do
           dialog = TkToplevel.new
           dialog.title = "Generate Even Numbers"
@@ -180,37 +184,6 @@ buttons.each do |row|
       end
     end.pack('side' => 'left')
   end
-end
-
-# File operations
-TkLabel.new(root) { text "File Operations" }.pack
-
-start_var = TkVariable.new
-stop_var = TkVariable.new
-file_path_var = TkVariable.new
-
-TkLabel.new(root) { text "Start Number" }.pack
-TkEntry.new(root, 'textvariable' => start_var).pack
-
-TkLabel.new(root) { text "Stop Number" }.pack
-TkEntry.new(root, 'textvariable' => stop_var).pack
-
-TkLabel.new(root) { text "File Path" }.pack
-TkEntry.new(root, 'textvariable' => file_path_var).pack
-
-file_operations = {
-  "Generate Square Numbers" => :generate_square_numbers,
-  "Generate Even Numbers" => :generate_even_numbers
-}
-
-file_operations.each do |operation_name, operation|
-  TkButton.new(root) do
-    text operation_name
-    command {
-      send(operation, start_var.to_i, stop_var.to_i, file_path_var.value)
-      result_var.value = "Generated #{operation_name}"
-    }
-  end.pack
 end
 
 # Start the Tk main loop
