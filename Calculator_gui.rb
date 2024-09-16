@@ -2,6 +2,7 @@ require 'tk'
 require_relative 'MathFunctions'
 require_relative 'Arithmetic'
 require_relative 'BuiltMathFunctions'
+require_relative 'MathFunctions2'
 
 # Create the main window
 root = TkRoot.new { title "Advanced Calculator" }
