@@ -6,7 +6,7 @@ Advanced Arithmetic Calculator - Project 2
 ---
 
 The Advanced Arithmetic Calculator is a GUI-based calculator built using the TK package for Python. 
-It performs basic arithmetic operations as well as advanced calculations such as finding squares and even numbers. 
+It implementes arithmetic, trigonometric, logarithmic, and power functions. It performs basic arithmetic operations as well as advanced calculations such as finding squares and even numbers. Moreover, it evaluates arithmetic expressions with proper operator precedence.
 This project also integrates file functions that allow saving results to a file for further use.
 This project was developed by Dieynabou Diallo, Jana Abedeljaber, Noelle Marcy, Yutong Ye.
 
