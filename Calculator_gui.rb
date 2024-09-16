@@ -59,8 +59,8 @@ def clear_expression(input_var, result_var)
   result_var.value = "Result: "
 end
 
-button_width = 8
-button_height = 4
+button_width = 6
+button_height = 3
 
 # Create the buttons for the calculator (numbers and operations)
 button_frame = TkFrame.new(root).pack('side' => 'top', 'fill' => 'x')
@@ -73,7 +73,8 @@ buttons = [
   ['0', '.', '=', '+'],
   ['^', 'sin', 'cos', 'tan'],
   ['|x|', '%', 'C', 'Even'],
-  ['Squares', 'Primes', 'Binary', 'Octal', 'Hexadecimal']
+  ['Squares', 'Primes', 'Binary', 'Octal', 'Hexadecimal'],
+  ['Median'] 
 ]
 
 buttons.each do |row|
@@ -99,7 +100,6 @@ buttons.each do |row|
             result_var.value = "Result: #{cos(input_var.value.to_f)}"
           when 'tan'
             result_var.value = "Result: #{tan(input_var.value.to_f)}"
-
           when '|x|'
             result_var.value = "Result: #{absolute(input_var.value.to_f)}"
           end
@@ -172,6 +172,25 @@ buttons.each do |row|
         command do
           result_var.value = "Hexadecimal: #{to_hexadecimal(input_var.value.to_i)}"
         end
+      when 'Median' # Median button command
+        command do
+          dialog = TkToplevel.new
+          dialog.title = "Calculate Median"
+
+          TkLabel.new(dialog) { text "Enter Dataset (comma-separated)" }.pack
+          data_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => data_var).pack
+
+          TkButton.new(dialog) do
+            text "Calculate Median"
+            command do
+              data = data_var.value.split(',').map(&:to_f)
+              median_value = median(data)
+              result_var.value = "Median: #{median_value}"
+              dialog.destroy
+            end
+          end.pack
+        end
       else
         command { append_expression(input_var, char) }
       end
@@ -179,38 +198,5 @@ buttons.each do |row|
   end
 end
 
-# File operations
-TkLabel.new(root) { text "File Operations" }.pack
-
-start_var = TkVariable.new
-stop_var = TkVariable.new
-file_path_var = TkVariable.new
-
-TkLabel.new(root) { text "Start Number" }.pack
-TkEntry.new(root, 'textvariable' => start_var).pack
-
-TkLabel.new(root) { text "Stop Number" }.pack
-TkEntry.new(root, 'textvariable' => stop_var).pack
-
-TkLabel.new(root) { text "File Path" }.pack
-TkEntry.new(root, 'textvariable' => file_path_var).pack
-
-file_operations = {
-  "Generate Square Numbers" => :generate_square_numbers,
-  "Generate Even Numbers" => :generate_even_numbers,
-  "Generate Prime Numbers" => :generate_primes
-}
-
-file_operations.each do |operation_name, operation|
-  TkButton.new(root) do
-    text operation_name
-    command {
-      send(operation, start_var.to_i, stop_var.to_i, file_path_var.value)
-      result_var.value = "Generated #{operation_name}"
-    }
-  end.pack
-end
-
 # Start the Tk main loop
 Tk.mainloop
-
