@@ -35,7 +35,7 @@ Find the mode of a dataset.
 Our calculator offers the ability to save results to files and load data from files. 
 This is particularly useful when working with large datasets or when you want to store the results of square or even calculations for later use.
 
-Saving Results: The results for square calculations, even numbers, and fibonacci sequence up to a limit can be saved to a text file.
+Saving Results: The results for square calculations, even numbers, odd numbers, and fibonacci sequence up to a limit can be saved to a text file.
 Loading Results: You can load previous calculations from a file.
 
 **How to Run File**
