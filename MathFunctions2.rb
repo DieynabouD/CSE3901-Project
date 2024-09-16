@@ -39,3 +39,18 @@ def generate_primes(n, file_path)
         end
     end
 end
+
+# Convert decimal to binary
+def to_binary(decimal)
+    decimal.to_i.to_s(2)
+  end
+  
+  # Convert decimal to octal
+  def to_octal(decimal)
+    decimal.to_i.to_s(8)
+  end
+  
+  # Convert decimal to hexadecimal
+  def to_hexadecimal(decimal)
+    decimal.to_i.to_s(16).upcase
+  end
