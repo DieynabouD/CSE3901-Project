@@ -81,7 +81,7 @@ buttons = [
   ['0', '.', '=', '+'],
   ['^', 'sin', 'cos', 'tan'],
   ['|x|', '%', 'C', 'Even'],
-  ['Squares']
+  ['Squares', 'log(base,a)']
 ]
 
 buttons.each do |row|
@@ -98,7 +98,7 @@ buttons.each do |row|
         command { evaluate_expression(input_var, result_var) }
       when 'C'
         command { clear_expression(input_var, result_var) }
-      when 'sin', 'cos', 'tan', '|x|', 'Square', 'Even'
+      when 'sin', 'cos', 'tan', '|x|', 'Square', 'Even', 'log(base,a)'
         command do
           case char
           when 'sin'
@@ -109,6 +109,8 @@ buttons.each do |row|
             result_var.value = "Result: #{tan(input_var.value.to_f)}"
           when '|x|'
             result_var.value = "Result: #{absolute(input_var.value.to_f)}"
+          when 'log(base,a)'
+            result_var.value = "Result: #{log_with_base(gets.chomp.to_f,gets.chomp.to_f)}"
           end # Close case char inside the command
         end # Close command block
       when 'Squares'
