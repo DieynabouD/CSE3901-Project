@@ -73,7 +73,7 @@ buttons = [
   ['0', '.', '=', '+'],
   ['^', 'sin', 'cos', 'tan'],
   ['|x|', '%', 'C', 'Even'],
-  ['Squares', 'Binary', 'Octal', 'Hexadecimal']
+  ['Squares', 'Primes', 'Binary', 'Octal', 'Hexadecimal']
 ]
 
 buttons.each do |row|
@@ -99,6 +99,7 @@ buttons.each do |row|
             result_var.value = "Result: #{cos(input_var.value.to_f)}"
           when 'tan'
             result_var.value = "Result: #{tan(input_var.value.to_f)}"
+
           when '|x|'
             result_var.value = "Result: #{absolute(input_var.value.to_f)}"
           end
@@ -133,31 +134,27 @@ buttons.each do |row|
             end
           end.pack
         end
-      when 'Even'
+      when 'Primes'
         command do
           dialog = TkToplevel.new
-          dialog.title = "Generate Even Numbers"
+          dialog.title = "Generate Primes"
 
-          TkLabel.new(dialog) { text "Enter Starting Number" }.pack
-          start_num_var = TkVariable.new
-          TkEntry.new(dialog, 'textvariable' => start_num_var).pack
-
-          TkLabel.new(dialog) { text "Enter Ending Number" }.pack
-          end_num_var = TkVariable.new
-          TkEntry.new(dialog, 'textvariable' => end_num_var).pack
+          TkLabel.new(dialog) { text "Enter Maximum Number" }.pack
+          max_num_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => max_num_var).pack
 
           TkButton.new(dialog) do
-            text "Save and Generate Evens"
+            text "Save and Generate Primes"
             command do
               file_path = Tk.getSaveFile(
-                'title' => 'Save evens to file',
+                'title' => 'Save primes to file',
                 'defaultextension' => '.txt',
                 'filetypes' => [['Text Files', '*.txt'], ['All Files', '*']]
               )
 
               if file_path
-                generate_even_numbers(start_num_var.value.to_i, end_num_var.value.to_i, file_path)
-                result_var.value = "Even numbers generated and saved to #{file_path}"
+                generate_primes(max_num_var.value.to_i, file_path)
+                result_var.value = "Prime numbers generated and saved to #{file_path}"
               end
               dialog.destroy
             end
@@ -200,7 +197,8 @@ TkEntry.new(root, 'textvariable' => file_path_var).pack
 
 file_operations = {
   "Generate Square Numbers" => :generate_square_numbers,
-  "Generate Even Numbers" => :generate_even_numbers
+  "Generate Even Numbers" => :generate_even_numbers,
+  "Generate Prime Numbers" => :generate_primes
 }
 
 file_operations.each do |operation_name, operation|
@@ -215,3 +213,4 @@ end
 
 # Start the Tk main loop
 Tk.mainloop
+
