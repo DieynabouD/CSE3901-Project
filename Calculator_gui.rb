@@ -123,8 +123,8 @@ def toggle_sign(input_var)
   end
 end
 
-button_width = 3
-button_height = 1
+button_width = 8
+button_height = 4
 
 # Create the buttons for the calculator (numbers and operations)
 button_frame = TkFrame.new(root).pack('side' => 'top', 'fill' => 'x')
