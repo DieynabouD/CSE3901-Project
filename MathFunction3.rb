@@ -1,11 +1,13 @@
-def is_prime(n)
+# Method to check whether the number is prime or not. 
+def isPrime(n)
     return false if n <= 1
-    for i in 2..(n - 1)
+    for i in 2..(n - 1) #if there is no other factors less than number itself except 1, it is a prime number. 
       return false if n % i == 0
     end
     true
 end
-  
+
+# Method to get the mininum number in array. 
 def minimum(data)
     min_value = data[0]
     for i in 1...data.length
@@ -14,14 +16,16 @@ def minimum(data)
     min_value
 end  
 
-def generate_odd_numbers(range_start, range_end, file_name)
+# Method to get lists of all odd numbers in given range. 
+def generateOddNumbers(range_start, range_end, file_name)
     File.open(file_name, 'w') do |file|
       for i in range_start..range_end
         file.puts(i) if i % 2 != 0
       end
     end
 end
-  
+
+# Method to find the mode of a data set.
 def mode(data)
     frequency = {}
     for i in 0...data.length
@@ -40,6 +44,7 @@ def mode(data)
         mode_value = key
       end
     end
-    
+
     mode_value
 end
+
