@@ -1,4 +1,3 @@
-
 # dataset = [1,3,10,4,5,8]
 # for data in dataset do
 #     puts data
