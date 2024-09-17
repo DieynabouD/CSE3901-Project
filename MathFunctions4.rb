@@ -4,9 +4,27 @@
 #     puts data
 # end
 
+#function to calculate the mean of a set of numbers
+def mean(data)
+  sum = 0
+  n = 0
+  
+  while n < data.length
+    sum += data[n]
+    n += 1
+  end
+  
+  # Calculate the mean
+  mean_value = sum / n.to_f 
+  
+  return mean_value
+end
 
-#function to calculate the mean (average) of a dataset
-def mean(dataset)
+
+
+
+#function to return the largest value from a set of numbers
+def maximum(dataset)
 i=0
 a=0
 sum=0

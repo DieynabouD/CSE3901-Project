@@ -30,40 +30,7 @@ def generate_even_numbers(start_num, stop_num, file_path)
   end
 end
 
-#function to calculate the mean (average) of a dataset
-def mean(dataset)
-i=0
-a=0
-sum=0
-puts "sum: #{sum}, a: #{a}, i: #{i}"
-while (i!=dataset.length())
-   a=dataset[i]
-   puts "a: #{a}"
-   sum=sum+a 
-   puts "sum: #{sum}"
-   i=i+1
-end
-result=sum/2
-puts "#{result}"
-end
-
-
-#function to return the largest value from a set of numbers
-def maximum(dataset)
-i=0
-a=0
-largest=0
-while (i!=dataset.length())
-   a=dataset[i]
-   if(a>largest)
-     largest=a 
-   end
-   i=i+1
-end
-end
-
- # #function to generate fibonacci numbers up to a given limit and save them to a file
- def fibonacci(limit,file_path)
+def fibonacci(limit,file_path)
   File.open(file_path,"w") do |file|
 i=1
 a=1
@@ -86,12 +53,3 @@ end
  end
  end
 
-# #function to convert fahrenheit to celsius
-def fahrenheit_to_celsius()
-    puts "Please enter your fahrenheit value: "
-    f=gets.chomp.to_i
-    a=(f-32)
-    fraction=Rational(5,9)
-    result=a*(fraction)
-    puts "Celsius result: #{format("%.2f",result)}"
-end
