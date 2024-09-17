@@ -260,7 +260,7 @@ buttons.each do |row|
             text "Next"
             command do
               dataset = dataset_var.value.split(',').map(&:to_i)
-              mode_value = Mode(dataset)
+              mode_value = mode(dataset)
               # Show the result in a message box
               Tk.messageBox(
                 'type'    => "ok",
