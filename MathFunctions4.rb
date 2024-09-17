@@ -6,21 +6,12 @@
 
 
 #function to calculate the mean (average) of a dataset
-def mean(dataset)
-i=0
-a=0
-sum=0
-puts "sum: #{sum}, a: #{a}, i: #{i}"
-while (i!=dataset.length())
-   a=dataset[i]
-   puts "a: #{a}"
-   sum=sum+a 
-   puts "sum: #{sum}"
-   i=i+1
+def mean(data)
+  sum = data.reduce(0) { |acc, num| acc + num }  # Sum all elements
+  n = data.length  # Get the number of elements
+  return sum / n.to_f  # Calculate the mean
 end
-result=sum/2
-puts "#{result}"
-end
+
 
 
 #function to return the largest value from a set of numbers
