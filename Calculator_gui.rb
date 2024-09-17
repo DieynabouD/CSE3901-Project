@@ -113,7 +113,7 @@ buttons.each do |row|
           when 'SquareRoot'
             result_var.value = "Result: #{squareRoot(input_var.value.to_f)}"
           when 'CubeRoot'
-            result_Var.value = "Result: #{cubeRoot(input_var.value.to_f)}"
+            result_var.value = "Result: #{cubeRoot(input_var.value.to_f)}"
           end
         end
       when 'Squares'
@@ -137,7 +137,6 @@ buttons.each do |row|
                 'defaultextension' => '.txt',
                 'filetypes' => [['Text Files', '*.txt'], ['All Files', '*']]
               )
-
               if file_path
                 generate_square_numbers(start_num_var.value.to_i, end_num_var.value.to_i, file_path)
                 result_var.value = "Square numbers generated and saved to #{file_path}"
@@ -226,7 +225,7 @@ buttons.each do |row|
                 'type'    => "ok",
                 'icon'    => "info",
                 'title'   => "Minimum",
-                'message' => "The minimum of the datas=et is: #{min_value}"
+                'message' => "The minimum of the dataset is: #{min_value}"
               )
             end
           end.pack
