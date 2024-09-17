@@ -76,7 +76,7 @@ buttons = [
   ['^', 'sin', 'cos', 'tan'],
   ['|x|', '%', 'C', 'Evens'],
   ['Squares', 'Primes', 'Binary', 'Octal', 'Hexadecimal'], 
-  ['FtoC']
+  ['FtoC', 'Median', 'Mean']
 ]
 
 buttons.each do |row|
@@ -230,13 +230,50 @@ buttons.each do |row|
         command do
           result_var.value = "Hexadecimal: #{to_hexadecimal(input_var.value.to_i)}"
         end
+      when 'Median' # Median button command
+        command do
+          dialog = TkToplevel.new
+          dialog.title = "Calculate Median"
+
+          TkLabel.new(dialog) { text "Enter Dataset (comma-separated)" }.pack
+          data_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => data_var).pack
+
+          TkButton.new(dialog) do
+            text "Calculate Median"
+            command do
+              data = data_var.value.split(',').map(&:to_f)
+              median_value = median(data)
+              result_var.value = "Median: #{median_value}"
+              dialog.destroy
+            end
+          end.pack
+        end
+      when 'Mean' # Median button command
+        command do
+          dialog = TkToplevel.new
+          dialog.title = "Calculate Mean"
+
+          TkLabel.new(dialog) { text "Enter Dataset (comma-separated)" }.pack
+          data_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => data_var).pack
+
+          TkButton.new(dialog) do
+            text "Calculate Mean"
+            command do
+              data = data_var.value.split(',').map(&:to_f)
+              mean_value = mean(data)
+              result_var.value = "Mean: #{mean_value}"
+              dialog.destroy
+            end
+          end.pack
+        end
       else
         command { append_expression(input_var, char) }
       end
     end.pack('side' => 'left')
   end
 end
-
 
 # Start the Tk main loop
 Tk.mainloop
