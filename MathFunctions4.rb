@@ -7,28 +7,39 @@
 
 #function to calculate the mean (average) of a dataset
 def mean(data)
-  sum = data.reduce(0) { |acc, num| acc + num }  # Sum all elements
-  n = data.length  # Get the number of elements
-  return sum / n.to_f  # Calculate the mean
+  if data.length() == 0
+    return "Error: Dataset is empty"
+  end
+  total = 0
+  i = 0
+  while i < data.length()
+    total = total + data[i]
+    i = i + 1
+  end
+  result = total / data.length.to_f
+  return result
 end
 
 
 
 #function to return the largest value from a set of numbers
 def maximum(dataset)
-i=0
-a=0
-sum=0
-puts "sum: #{sum}, a: #{a}, i: #{i}"
-while (i!=dataset.length())
-   a=dataset[i]
-   puts "a: #{a}"
-   sum=sum+a 
-   puts "sum: #{sum}"
-   i=i+1
-end
-result=sum/2
-puts "#{result}"
+  if dataset.length == 0
+    return "Error: Dataset is empty"
+  end
+  
+  max = 0
+  tempMax = 0
+  i = 0
+  while i < dataset.length
+    tempMax = dataset[i]
+    if tempMax < dataset[i]
+      tempMax = dataset[i]
+    end
+    i = i + 1
+  end
+  max = tempMax
+  return tempMax
 end
 
 
