@@ -257,24 +257,7 @@ buttons.each do |row|
         end
       when 'isPrime'
         command do
-          dialog = TkToplevel.new
-          dialog.title = "Check if Prime"
-          num_to_check = start_num_var.value.to_i
-          if isPrime(num_to_check)
-            Tk.messageBox(
-              'type'    => "ok",
-              'icon'    => "info",
-              'title'   => "Prime Check",
-              'message' => "#{num_to_check} is a prime number."
-            )
-          else
-            Tk.messageBox(
-              'type'    => "ok",
-              'icon'    => "warning",
-              'title'   => "Prime Check",
-              'message' => "#{num_to_check} is not a prime number."
-            )
-          end
+          result_var.value = "Check is Prime: #{isPrime(input_var.value.to_i)}"
         end
       when 'log(base,a)'
         command do
