@@ -4,13 +4,22 @@
 #     puts data
 # end
 
-
-#function to calculate the mean (average) of a dataset
+#function to calculate the mean of a set of numbers
 def mean(data)
-  sum = data.reduce(0) { |acc, num| acc + num }  # Sum all elements
-  n = data.length  # Get the number of elements
-  return sum / n.to_f  # Calculate the mean
+  sum = 0
+  n = 0
+  
+  while n < data.length
+    sum += data[n]
+    n += 1
+  end
+  
+  # Calculate the mean
+  mean_value = sum / n.to_f 
+  
+  return mean_value
 end
+
 
 
 
