@@ -1,9 +1,11 @@
-
+# Method to get square roots.
 def squareRoot(n)
   Math.sqrt(n)
 end
 
-def cubeRoot(n)
-  n ** (1.0 / 3)
+# Method to get cube roots.
+def cube_root(number)
+  cube_root_value = number ** (1.0 / 3.0)
+  return cube_root_value
 end
 
