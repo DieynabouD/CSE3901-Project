@@ -1,10 +1,83 @@
+when 'Fibonacci'
+  command do
+    dialog = TkToplevel.new
+    dialog.title = "Generate Fibonacci sequence up to limit"
 
-require 'tk'
+    TkLabel.new(dialog) { text "Enter Limit Number" }.pack
+    lim_num_var = TkVariable.new
+    TkEntry.new(dialog, 'textvariable' => lim_num_var).pack
+
+    TkButton.new(dialog) do
+      text "Save and Generate Fibonacci"
+      command do
+        file_path = Tk.getSaveFile(
+          'title' => 'Save primes to file',
+          'defaultextension' => '.txt',
+          'filetypes' => [['Text Files', '*.txt'], ['All Files', '*']]
+        )
+
+        if file_path
+          fibonacci(lim_num_var.value.to_i, file_path)
+          result_var.value = "Prime numbers generated and saved to #{file_path}"
+        end
+        dialog.destroy
+      end
+    end.pack
+  end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+when 'log(base,a)'
+        command do
+          dialog = TkToplevel.new
+          dialog.title = "Calculate log with base"
+
+          TkLabel.new(dialog) { text "Enter Base Number" }.pack
+          start_num_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => start_num_var).pack
+
+          TkLabel.new(dialog) { text "Enter Second Number" }.pack
+          end_num_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => end_num_var).pack
+
+          TkButton.new(dialog) do
+            text "Calculate"
+            command do
+                result_var.value = "#{log_with_base(end_num_var.value.to_f, start_num_var.value.to_f)}"
+
+              dialog.destroy
+            end
+          end.pack
+        end
+
+
+        require 'tk'
 require_relative 'MathFunctions'
 require_relative 'Arithmetic'
 require_relative 'BuiltMathFunctions'
 require_relative 'MathFunctions2'
-require_relative 'MathFunctions4'
 
 # Create the main window
 root = TkRoot.new { title "Advanced Calculator" }
@@ -12,6 +85,8 @@ root.minsize(600, 800)
 
 # Create a text variable to hold the expression entered by the user
 input_var = TkVariable.new
+
+base_var = TkVariable.new("Base: ")
 
 # Create a label to display the result
 result_var = TkVariable.new("Result: ")
@@ -61,22 +136,21 @@ def clear_expression(input_var, result_var)
   result_var.value = "Result: "
 end
 
-button_width = 6
-button_height = 3
+button_width = 8
+button_height = 4
 
 # Create the buttons for the calculator (numbers and operations)
 button_frame = TkFrame.new(root).pack('side' => 'top', 'fill' => 'x')
 
 # Buttons for digits 1-9, 0, and operators
 buttons = [
-  ['7', '8', '9', '/'],
-  ['4', '5', '6', '*'],
+  ['7', '8', '9', '/','log(base,a)'],
+  ['4', '5', '6', '*','Squares' ],
   ['1', '2', '3', '-'],
   ['0', '.', '=', '+'],
   ['^', 'sin', 'cos', 'tan'],
-  ['|x|', '%', 'C', 'Evens','log(base,a)'],
-  ['Squares', 'Primes', 'Binary', 'Octal', 'Hexadecimal'], 
-  ['FtoC', 'Median', 'Mean','Fibonacci', 'Max']
+  ['|x|', '%', 'C', 'Evens'],
+  ['Squares', 'Primes', 'Binary', 'Octal', 'Hexadecimal']
 ]
 
 buttons.each do |row|
@@ -93,7 +167,7 @@ buttons.each do |row|
         command { evaluate_expression(input_var, result_var) }
       when 'C'
         command { clear_expression(input_var, result_var) }
-      when 'sin', 'cos', 'tan', '|x|', 'FtoC'
+      when 'sin', 'cos', 'tan', '|x|', 
         command do
           case char
           when 'sin'
@@ -102,12 +176,6 @@ buttons.each do |row|
             result_var.value = "Result: #{cos(input_var.value.to_f)}"
           when 'tan'
             result_var.value = "Result: #{tan(input_var.value.to_f)}"
-
-          when '|x|'
-            result_var.value = "Result: #{absolute(input_var.value.to_f)}"
-          
-          when 'FtoC'
-            result_var.value = "Result: #{fahrenheit_to_celsius(input_var.value.to_f)}"
           end
         end
       when 'Squares'
@@ -192,32 +260,7 @@ buttons.each do |row|
             end
           end.pack
         end
-      when 'Fibonacci'
-        command do
-          dialog = TkToplevel.new
-          dialog.title = "Generate Fibonacci sequence up to limit"
-      
-          TkLabel.new(dialog) { text "Enter Limit Number" }.pack
-          lim_num_var = TkVariable.new
-          TkEntry.new(dialog, 'textvariable' => lim_num_var).pack
-      
-          TkButton.new(dialog) do
-            text "Save and Generate Fibonacci"
-            command do
-              file_path = Tk.getSaveFile(
-                'title' => 'Save primes to file',
-                'defaultextension' => '.txt',
-                'filetypes' => [['Text Files', '*.txt'], ['All Files', '*']]
-              )
-      
-              if file_path
-                fibonacci(lim_num_var.value.to_i, file_path)
-                result_var.value = "Prime numbers generated and saved to #{file_path}"
-              end
-              dialog.destroy
-            end
-          end.pack
-        end
+
       when 'Primes'
         command do
           dialog = TkToplevel.new
@@ -256,51 +299,13 @@ buttons.each do |row|
         command do
           result_var.value = "Hexadecimal: #{to_hexadecimal(input_var.value.to_i)}"
         end
-      when 'Median' # Median button command
-        command do
-          dialog = TkToplevel.new
-          dialog.title = "Calculate Median"
-
-          TkLabel.new(dialog) { text "Enter Dataset (comma-separated)" }.pack
-          data_var = TkVariable.new
-          TkEntry.new(dialog, 'textvariable' => data_var).pack
-
-          TkButton.new(dialog) do
-            text "Calculate Median"
-            command do
-              data = data_var.value.split(',').map(&:to_f)
-              median_value = median(data)
-              result_var.value = "Median: #{median_value}"
-              dialog.destroy
-            end
-          end.pack
-        end
-
-      when 'Mean' # Mean button command
-        command do
-          dialog = TkToplevel.new
-          dialog.title = "Calculate Mean"
-
-          TkLabel.new(dialog) { text "Enter Dataset (comma-separated)" }.pack
-          data_var = TkVariable.new
-          TkEntry.new(dialog, 'textvariable' => data_var).pack
-
-          TkButton.new(dialog) do
-            text "Calculate Mean"
-            command do
-              data = data_var.value.split(',').map(&:to_f)
-              mean_value = mean(data)
-              result_var.value = "Mean: #{mean_value}"
-              dialog.destroy
-            end
-          end.pack
-        end
       else
         command { append_expression(input_var, char) }
       end
     end.pack('side' => 'left')
   end
 end
+
 
 # Start the Tk main loop
 Tk.mainloop

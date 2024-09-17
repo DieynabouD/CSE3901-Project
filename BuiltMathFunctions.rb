@@ -11,3 +11,7 @@ end
 def tan(n)
   Math.tan(n)
 end
+
+def log_with_base(base,a)
+  Math.log(base,a)
+end
