@@ -1,4 +1,3 @@
-
 require 'tk'
 require_relative 'MathFunctions'
 require_relative 'Arithmetic'
@@ -77,7 +76,7 @@ buttons = [
   ['0', '.', '=', '+', 'C'],
   ['|x|', '%', '^', 'Evens', 'Odds'],
   ['Squares', 'Primes', 'Binary', 'Octal', 'Hexadecimal'], 
-  ['FtoC', 'isPrime', 'Fibonacci', 'log(base,a)'],
+  ['FtoC', 'isPrime', 'Fibonacci', 'log(base,a)', 'Factorial'],
   ['Mean', 'Min', 'Max', 'Mode', 'Median'],
   ['SquareRoot', 'CubeRoot', '(', ')']
 ]
@@ -396,6 +395,47 @@ buttons.each do |row|
               data = data_var.value.split(',').map(&:to_f)
               mean_value = mean(data)
               result_var.value = "Mean: #{mean_value}"
+              dialog.destroy
+            end
+          end.pack
+        end
+      when 'Factorial' 
+        command do
+          dialog = TkToplevel.new
+          dialog.title = "Calculate Factorial"
+
+          TkLabel.new(dialog) { text "Enter a Non-Negative Integer" }.pack
+          n_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => n_var).pack
+
+          TkButton.new(dialog) do
+            text "Calculate Factorial"
+            command do
+              n = n_var.value.to_i
+              result_var.value = "Factorial: #{factorial(n)}"
+              dialog.destroy
+            end
+          end.pack
+        end
+      when '%'
+        command do
+          dialog = TkToplevel.new
+          dialog.title = "Calculate Percentage"
+
+          TkLabel.new(dialog) { text "Enter Value (a)" }.pack
+          a_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => a_var).pack
+
+          TkLabel.new(dialog) { text "Enter Value (b)" }.pack
+          b_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => b_var).pack
+
+          TkButton.new(dialog) do
+            text "Calculate Percentage"
+            command do
+              a = a_var.value.to_f
+              b = b_var.value.to_f
+              result_var.value = "Percentage: #{percentage(a, b)}%"
               dialog.destroy
             end
           end.pack
