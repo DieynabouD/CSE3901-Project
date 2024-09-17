@@ -5,7 +5,7 @@ require_relative 'Arithmetic'
 require_relative 'BuiltMathFunctions'
 require_relative 'MathFunctions2'
 require_relative 'MathFunctions4'
-require_relative 'MathFunctions3'
+require_relative 'MathFunction3'
 require_relative 'SquareAndCubeRoots'
 
 # Create the main window
