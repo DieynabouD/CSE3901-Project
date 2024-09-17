@@ -4,6 +4,7 @@
 #     puts data
 # end
 
+<<<<<<< HEAD
 #function to calculate the mean of a set of numbers
 def mean(data)
   sum = 0
@@ -25,6 +26,11 @@ end
 
 #function to return the largest value from a set of numbers
 def maximum(dataset)
+=======
+
+#function to calculate the mean (average) of a dataset
+def mean(dataset)
+>>>>>>> ad04fd3bab8889ac0e525e66160783939f638395
 i=0
 a=0
 sum=0
