@@ -76,7 +76,7 @@ buttons = [
   ['^', 'sin', 'cos', 'tan'],
   ['|x|', '%', 'C', 'Evens','log(base,a)'],
   ['Squares', 'Primes', 'Binary', 'Octal', 'Hexadecimal'], 
-  ['FtoC', 'Median', 'Mean','Fibonacci']
+  ['FtoC', 'Median', 'Mean','Fibonacci', 'Max']
 ]
 
 buttons.each do |row|
@@ -275,7 +275,8 @@ buttons.each do |row|
             end
           end.pack
         end
-      when 'Mean' # Median button command
+
+      when 'Mean' # Mean button command
         command do
           dialog = TkToplevel.new
           dialog.title = "Calculate Mean"

@@ -24,21 +24,21 @@ end
 
 
 #function to return the largest value from a set of numbers
-def maximum(dataset)
-i=0
-a=0
-largest=0
-while (i!=dataset.length())
-   a=dataset[i]
-   puts "a: #{a}"
-   if(a>largest)
-     largest=a 
-   end
-   puts "largest (in loop): #{largest}"
-   i=i+1
-end
-puts "largest: #{largest}"
-end
+# def maximum(dataset)
+# i=0
+# a=0
+# largest=0
+# while (i!=dataset.length())
+#    a=dataset[i]
+#    puts "a: #{a}"
+#    if(a>largest)
+#      largest=a 
+#    end
+#    puts "largest (in loop): #{largest}"
+#    i=i+1
+# end
+# puts "largest: #{largest}"
+# end
 
  # #function to generate fibonacci numbers up to a given limit and save them to a file
  def fibonacci(limit,file_path)
