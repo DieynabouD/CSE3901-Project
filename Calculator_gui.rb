@@ -63,8 +63,8 @@ def clear_expression(input_var, result_var)
   result_var.value = "Result: "
 end
 
-button_width = 6
-button_height = 3
+button_width = 5
+button_height = 1
 
 # Create the buttons for the calculator (numbers and operations)
 button_frame = TkFrame.new(root).pack('side' => 'top', 'fill' => 'x')
@@ -261,15 +261,14 @@ buttons.each do |row|
             text "Next"
             command do
               dataset = dataset_var.value.split(',').map(&:to_i)
-              mode_value = Mode(dataset)
-              # Show the result in a message box
+              mode_value = mode(dataset)
               Tk.messageBox(
                 'type'    => "ok",
                 'icon'    => "info",
                 'title'   => "Mode Result",
                 'message' => "The mode of the dataset is: #{mode_value}"
               )
-            end
+            end       
           end.pack
         end
       when 'isPrime'
