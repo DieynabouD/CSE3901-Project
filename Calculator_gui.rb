@@ -74,9 +74,9 @@ buttons = [
   ['1', '2', '3', '-'],
   ['0', '.', '=', '+'],
   ['^', 'sin', 'cos', 'tan'],
-  ['|x|', '%', 'C', 'Evens'],
+  ['|x|', '%', 'C', 'Evens','log(base,a)'],
   ['Squares', 'Primes', 'Binary', 'Octal', 'Hexadecimal'], 
-  ['FtoC', 'Median', 'Mean']
+  ['FtoC', 'Median', 'Mean','Fibonacci']
 ]
 
 buttons.each do |row|
@@ -188,6 +188,32 @@ buttons.each do |row|
             command do
                 result_var.value = "#{log_with_base(end_num_var.value.to_f, start_num_var.value.to_f)}"
 
+              dialog.destroy
+            end
+          end.pack
+        end
+      when 'Fibonacci'
+        command do
+          dialog = TkToplevel.new
+          dialog.title = "Generate Fibonacci sequence up to limit"
+      
+          TkLabel.new(dialog) { text "Enter Limit Number" }.pack
+          lim_num_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => lim_num_var).pack
+      
+          TkButton.new(dialog) do
+            text "Save and Generate Fibonacci"
+            command do
+              file_path = Tk.getSaveFile(
+                'title' => 'Save primes to file',
+                'defaultextension' => '.txt',
+                'filetypes' => [['Text Files', '*.txt'], ['All Files', '*']]
+              )
+      
+              if file_path
+                fibonacci(lim_num_var.value.to_i, file_path)
+                result_var.value = "Prime numbers generated and saved to #{file_path}"
+              end
               dialog.destroy
             end
           end.pack

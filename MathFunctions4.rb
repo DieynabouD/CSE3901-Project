@@ -6,12 +6,21 @@
 
 
 #function to calculate the mean (average) of a dataset
-def mean(data)
-  sum = data.reduce(0) { |acc, num| acc + num }  # Sum all elements
-  n = data.length  # Get the number of elements
-  return sum / n.to_f  # Calculate the mean
+def mean(dataset)
+i=0
+a=0
+sum=0
+puts "sum: #{sum}, a: #{a}, i: #{i}"
+while (i!=dataset.length())
+   a=dataset[i]
+   puts "a: #{a}"
+   sum=sum+a 
+   puts "sum: #{sum}"
+   i=i+1
 end
-
+result=sum/2
+puts "#{result}"
+end
 
 
 #function to return the largest value from a set of numbers
@@ -32,17 +41,14 @@ puts "largest: #{largest}"
 end
 
  # #function to generate fibonacci numbers up to a given limit and save them to a file
- def fibonacci(file_path,file)
+ def fibonacci(limit,file_path)
   File.open(file_path,"w") do |file|
-  
-puts "Please give limit: "
-limit=gets.chomp().to_i
 i=1
 a=1
 b=0
 c=0
 if(limit!=0)
-  print "1"
+  print "0 1"
   while(i!=limit)
       c=a+b #takes first two numbers and adds them
       print " #{c}"
@@ -58,20 +64,8 @@ end
  end
  end
 
-<<<<<<< HEAD
-# #function to convert fahrenheit to celsius
-def fahrenheit_to_celsius()
-    puts "Please enter your fahrenheit value: "
-    f=gets.chomp.to_i
-    a=(f-32)
-    fraction=Rational(5,9)
-    result=a*(fraction)
-    puts "Celsius result: #{format("%.2f",result)}"
-end
-=======
 # Function to convert Fahrenheit to Celsius
 def fahrenheit_to_celsius(f)
   result = (f - 32) * 5.0 / 9.0
   format("%.2f", result)
 end
->>>>>>> 66dbd2e1469bda669cdcaffa35854fc8a66a439e
