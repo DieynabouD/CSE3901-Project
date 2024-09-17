@@ -63,8 +63,8 @@ def clear_expression(input_var, result_var)
   result_var.value = "Result: "
 end
 
-button_width = 6
-button_height = 3
+button_width = 5
+button_height = 1
 
 # Create the buttons for the calculator (numbers and operations)
 button_frame = TkFrame.new(root).pack('side' => 'top', 'fill' => 'x')
