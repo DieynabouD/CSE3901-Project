@@ -71,16 +71,15 @@ button_frame = TkFrame.new(root).pack('side' => 'top', 'fill' => 'x')
 
 # Buttons for digits 1-9, 0, and operators
 buttons = [
-  ['7', '8', '9', '/'],
-  ['4', '5', '6', '*'],
-  ['1', '2', '3', '-'],
-  ['0', '.', '=', '+'],
-  ['^', 'sin', 'cos', 'tan'],
-  ['|x|', '%', 'C', 'Evens'],
+  ['7', '8', '9', '/', 'sin'],
+  ['4', '5', '6', '*', 'cos'],
+  ['1', '2', '3', '-', 'tan'],
+  ['0', '.', '=', '+', 'C'],
+  ['|x|', '%', '^', 'Evens', 'Odds'],
   ['Squares', 'Primes', 'Binary', 'Octal', 'Hexadecimal'], 
-  ['FtoC'],
-  ['Odds', 'isPrime', 'Min', 'Mode'],
-  ['SquareRoot', 'CubeRoot']
+  ['FtoC', 'isPrime', 'Fibonacci', 'log(base,a)'],
+  ['Mean', 'Min', 'Max', 'Mode', 'Median'],
+  ['SquareRoot', 'CubeRoot', '(', ')']
 ]
 
 buttons.each do |row|
@@ -230,6 +229,24 @@ buttons.each do |row|
             end
           end.pack
         end
+      when 'Max' # Max button command
+        command do
+          dialog = TkToplevel.new
+          dialog.title = "Find Maximum"
+          TkLabel.new(dialog) { text "Enter Dataset (comma-separated)" }.pack
+          data_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => data_var).pack
+
+          TkButton.new(dialog) do
+            text "Find Maximum"
+            command do
+              data = data_var.value.split(',').map(&:to_f)
+              max_value = maximum(data)
+              result_var.value = "Maximum: #{max_value}"
+              dialog.destroy
+            end
+          end.pack
+        end
       when 'Mode'
         command do
           # Create a new dialog to prompt for dataset input
@@ -318,6 +335,70 @@ buttons.each do |row|
       when 'Hexadecimal'
         command do
           result_var.value = "Hexadecimal: #{to_hexadecimal(input_var.value.to_i)}"
+        end
+      when 'Fibonacci'
+        command do
+          dialog = TkToplevel.new
+          dialog.title = "Generate Fibonacci sequence up to limit"
+      
+          TkLabel.new(dialog) { text "Enter Limit Number" }.pack
+          lim_num_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => lim_num_var).pack
+      
+          TkButton.new(dialog) do
+            text "Save and Generate Fibonacci"
+            command do
+              file_path = Tk.getSaveFile(
+                'title' => 'Save Fibonacci to file',
+                'defaultextension' => '.txt',
+                'filetypes' => [['Text Files', '*.txt'], ['All Files', '*']]
+              )
+      
+              if file_path
+                fibonacci(lim_num_var.value.to_i, file_path)
+                result_var.value = "Fibonacci sequence generated and saved to #{file_path}"
+              end
+              dialog.destroy
+            end
+          end.pack
+        end
+      when 'Median' # Median button command
+        command do
+          dialog = TkToplevel.new
+          dialog.title = "Calculate Median"
+
+          TkLabel.new(dialog) { text "Enter Dataset (comma-separated)" }.pack
+          data_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => data_var).pack
+
+          TkButton.new(dialog) do
+            text "Calculate Median"
+            command do
+              data = data_var.value.split(',').map(&:to_f)
+              median_value = median(data)
+              result_var.value = "Median: #{median_value}"
+              dialog.destroy
+            end
+          end.pack
+        end
+      when 'Mean' # Mean button command
+        command do
+          dialog = TkToplevel.new
+          dialog.title = "Calculate Mean"
+
+          TkLabel.new(dialog) { text "Enter Dataset (comma-separated)" }.pack
+          data_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => data_var).pack
+
+          TkButton.new(dialog) do
+            text "Calculate Mean"
+            command do
+              data = data_var.value.split(',').map(&:to_f)
+              mean_value = mean(data)
+              result_var.value = "Mean: #{mean_value}"
+              dialog.destroy
+            end
+          end.pack
         end
       else
         command { append_expression(input_var, char) }
