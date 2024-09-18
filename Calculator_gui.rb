@@ -40,7 +40,12 @@ def evaluate_expression(input_var, result_var)
     when '*'
       result = multiply(result, numbers[i])
     when '/'
-      result = division(result, numbers[i])
+      if numbers[i] == 0
+        result_var.value = "Error: Division by zero is not allowed"
+        return
+      else
+        result = division(result, numbers[i])
+      end
     when '^'
       result = exponent(result, numbers[i])
     when '%'
@@ -110,7 +115,11 @@ buttons.each do |row|
           when 'FtoC'
             result_var.value = "Result: #{fahrenheit_to_celsius(input_var.value.to_f)}"
           when 'SquareRoot'
-            result_var.value = "Result: #{squareRoot(input_var.value.to_f)}"
+            if input_var.value.to_f < 0
+              result_var.value = "Error: Square root of a negative number is not allowed"
+            else
+              result_var.value = "Result: #{squareRoot(input_var.value.to_f)}"
+            end
           when 'CubeRoot'
             result_var.value = "Result: #{cubeRoot(input_var.value.to_f)}"
           end
@@ -195,7 +204,6 @@ buttons.each do |row|
                 'defaultextension' => '.txt',
                 'filetypes' => [['Text Files', '*.txt'], ['All Files', '*']]
               )
-
               if file_path
                 generateOddNumbers(start_num_var.value.to_i, end_num_var.value.to_i, file_path)
                 result_var.value = "Odd numbers generated and saved to #{file_path}"
@@ -236,7 +244,6 @@ buttons.each do |row|
           TkLabel.new(dialog) { text "Enter Dataset (comma-separated)" }.pack
           data_var = TkVariable.new
           TkEntry.new(dialog, 'textvariable' => data_var).pack
-
           TkButton.new(dialog) do
             text "Find Maximum"
             command do
@@ -412,8 +419,18 @@ buttons.each do |row|
             text "Calculate Factorial"
             command do
               n = n_var.value.to_i
-              result_var.value = "Factorial: #{factorial(n)}"
-              dialog.destroy
+              if n < 0
+                error_dialog = TkToplevel.new
+                error_dialog.title = "Error"
+                TkLabel.new(error_dialog) { text "Error: Please enter a non-negative number." }.pack
+                TkButton.new(error_dialog) do
+                  text "OK"
+                  command { error_dialog.destroy }
+                end.pack
+              else
+                result_var.value = "Factorial: #{factorial(n)}"
+                dialog.destroy
+              end
             end
           end.pack
         end
