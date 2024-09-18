@@ -4,59 +4,100 @@ require_relative 'Arithmetic'
 require_relative 'BuiltMathFunctions'
 require_relative 'MathFunctions2'
 require_relative 'MathFunctions4'
-require_relative 'MathFunction3'
 require_relative 'SquareAndCubeRoots'
-
+require_relative 'MathFunction3'
 # Create the main window
-root = TkRoot.new { title "Advanced Calculator" }
+
+root = TkRoot.new { title "Advanced Calculator" 
+background "pink" }
 root.minsize(600, 800)
 
 # Create a text variable to hold the expression entered by the user
 input_var = TkVariable.new
 
 # Create a label to display the result
-result_var = TkVariable.new("Result: ")
+result_var = TkVariable.new("Result: ") 
 
 # Entry field where the user enters the expression
-TkEntry.new(root, 'textvariable' => input_var, 'font' => 'Arial 20', 'justify' => 'right').pack('side' => 'top', 'fill' => 'x')
+TkEntry.new(root, 'textvariable' => input_var, 'font' => 'Arial 15 bold', 'justify' => 'right').pack('side' => 'top', 'fill' => 'x')
 
 # Label to show the result
-TkLabel.new(root, 'textvariable' => result_var, 'font' => 'Arial 20').pack('side' => 'top')
+TkLabel.new(root, 'textvariable' => result_var, 'font' => 'Arial 15 bold', 'background' => 'pink' ).pack('side' => 'top')
 
-# evaluate basic arithmetic expressions 
+# Evaluate expressions, including handling parentheses and operator precedence
 def evaluate_expression(input_var, result_var)
   expression = input_var.value
-  numbers = expression.scan(/\d+\.?\d*/).map(&:to_f)  # Extract numbers as floats
-  operators = expression.scan(/[\+\-\*\/\^\%]/)  # Extract operators, including ^ and %
-  result = numbers.shift  # Initialize the result with the first number
-  
-  operators.each_with_index do |op, i|
-    case op
+
+  # Function to perform basic arithmetic
+  def apply_operator(operator, a, b)
+    case operator
     when '+'
-      result = addition(result, numbers[i])
+      return addition(a, b)
     when '-'
-      result = subtraction(result, numbers[i])
+      return subtraction(a, b)
     when '*'
-      result = multiply(result, numbers[i])
+      return multiply(a, b)
     when '/'
-      result = division(result, numbers[i])
+      if b == 0
+        raise "Division by zero"
+      else
+      return division(a, b)
+      end
     when '^'
-      result = exponent(result, numbers[i])
+      return exponent(a, b)
     when '%'
-      result = modulo(result, numbers[i])
+      return modulo(a, b)
+    else
+      raise "Unsupported operator #{operator}"
     end
   end
 
-  # Display the result
+  # Function to handle parentheses recursively
+  def evaluate_parentheses(expression)
+    while expression.include?('(')
+      expression.sub!(/\([^()]*\)/) do |sub_expr|
+        evaluate_basic(sub_expr[1..-2])  # Remove parentheses and evaluate
+      end
+    end
+    evaluate_basic(expression)  # Evaluate the remaining expression
+  end
+
+  # Function to evaluate expressions without parentheses, considering operator precedence
+  def evaluate_basic(expression)
+    # Handle multiplication, division, exponentiation, and modulus first (operator precedence)
+    while expression =~ /[\*\^\/%]/
+      expression.gsub!(/(-?\d+\.?\d*)([\*\^\/%])(-?\d+\.?\d*)/) do
+        a = $1.to_f
+        op = $2
+        b = $3.to_f
+        apply_operator(op, a, b)
+      end
+    end
+
+    # Handle arithmetic addition and subtraction
+    while expression =~ /(-?\d+\.?\d*)([\+\-])(-?\d+\.?\d*)/
+      expression.gsub!(/(-?\d+\.?\d*)([\+\-])(-?\d+\.?\d*)/) do
+        a = $1.to_f
+        op = $2
+        b = $3.to_f
+        apply_operator(op, a, b)
+      end
+    end
+
+    expression.to_f
+  end
+
+  # Start by evaluating parentheses, then the rest
+  result = evaluate_parentheses(expression)
   result_var.value = "Result: #{result}"
 end
 
-# append to the expression when a button is pressed
+# Append to the expression when a button is pressed
 def append_expression(input_var, value)
   input_var.value = input_var.value + value
 end
 
-# clear the expression
+# Clear the expression
 def clear_expression(input_var, result_var)
   input_var.value = ""
   result_var.value = "Result: "
@@ -66,7 +107,8 @@ button_width = 6
 button_height = 3
 
 # Create the buttons for the calculator (numbers and operations)
-button_frame = TkFrame.new(root).pack('side' => 'top', 'fill' => 'x')
+button_frame = TkFrame.new(root, 'background' => 'pink').pack('side' => 'top', 'fill' => 'x')
+
 
 # Buttons for digits 1-9, 0, and operators
 buttons = [
@@ -76,19 +118,20 @@ buttons = [
   ['0', '.', '=', '+', 'C'],
   ['|x|', '%', '^', 'Evens', 'Odds'],
   ['Squares', 'Primes', 'Binary', 'Octal', 'Hexadecimal'], 
-  ['FtoC', 'isPrime', 'Fibonacci', 'log(base,a)', 'Factorial'],
-  ['Mean', 'Min', 'Max', 'Mode', 'Median'],
+  ['FtoC', 'isPrime', 'Fibonacci', 'log(base,a)'],
+  ['Mean', 'Min', 'Max', 'Modes', 'Median'],
   ['SquareRoot', 'CubeRoot', '(', ')']
 ]
 
 buttons.each do |row|
-  row_frame = TkFrame.new(button_frame).pack('side' => 'top', 'fill' => 'x')
+  row_frame = TkFrame.new(button_frame, 'background' => 'pink').pack('side' => 'top', 'fill' => 'x')
   row.each do |char|
     TkButton.new(row_frame) do
       text char
       width button_width
       height button_height
-      font 'Arial 20'
+      font 'Arial 15'
+      background 'light pink'
 
       case char
       when '='
@@ -173,6 +216,7 @@ buttons.each do |row|
             end
           end.pack
         end
+      #when odd button is clicked
       when 'Odds' 
         command do
           dialog = TkToplevel.new
@@ -246,7 +290,7 @@ buttons.each do |row|
             end
           end.pack
         end
-      when 'Mode'
+      when 'Modes'
         command do
           # Create a new dialog to prompt for dataset input
           dialog = TkToplevel.new
@@ -260,17 +304,17 @@ buttons.each do |row|
             text "Next"
             command do
               dataset = dataset_var.value.split(',').map(&:to_i)
-              mode_value = Mode(dataset)
               # Show the result in a message box
               Tk.messageBox(
                 'type'    => "ok",
                 'icon'    => "info",
                 'title'   => "Mode Result",
-                'message' => "The mode of the dataset is: #{mode_value}"
+                'message' => "The mode of the dataset is: #{mode(dataset)}"
               )
             end
           end.pack
         end
+      # when 'Primes'
       when 'isPrime'
         command do
           result_var.value = "Check is Prime: #{isPrime(input_var.value.to_i)}"
@@ -305,7 +349,7 @@ buttons.each do |row|
           TkLabel.new(dialog) { text "Enter Maximum Number" }.pack
           max_num_var = TkVariable.new
           TkEntry.new(dialog, 'textvariable' => max_num_var).pack
-
+          # Button to save and generate prime numbers
           TkButton.new(dialog) do
             text "Save and Generate Primes"
             command do
@@ -399,47 +443,6 @@ buttons.each do |row|
             end
           end.pack
         end
-      when 'Factorial' 
-        command do
-          dialog = TkToplevel.new
-          dialog.title = "Calculate Factorial"
-
-          TkLabel.new(dialog) { text "Enter a Non-Negative Integer" }.pack
-          n_var = TkVariable.new
-          TkEntry.new(dialog, 'textvariable' => n_var).pack
-
-          TkButton.new(dialog) do
-            text "Calculate Factorial"
-            command do
-              n = n_var.value.to_i
-              result_var.value = "Factorial: #{factorial(n)}"
-              dialog.destroy
-            end
-          end.pack
-        end
-      when '%'
-        command do
-          dialog = TkToplevel.new
-          dialog.title = "Calculate Percentage"
-
-          TkLabel.new(dialog) { text "Enter Value (a)" }.pack
-          a_var = TkVariable.new
-          TkEntry.new(dialog, 'textvariable' => a_var).pack
-
-          TkLabel.new(dialog) { text "Enter Value (b)" }.pack
-          b_var = TkVariable.new
-          TkEntry.new(dialog, 'textvariable' => b_var).pack
-
-          TkButton.new(dialog) do
-            text "Calculate Percentage"
-            command do
-              a = a_var.value.to_f
-              b = b_var.value.to_f
-              result_var.value = "Percentage: #{percentage(a, b)}%"
-              dialog.destroy
-            end
-          end.pack
-        end
       else
         command { append_expression(input_var, char) }
       end
@@ -447,6 +450,4 @@ buttons.each do |row|
   end
 end
 
-
-# Start the Tk main loop
 Tk.mainloop

@@ -22,6 +22,9 @@ end
 
 # Method to get the mininum number in array. 
 def minimum(data)
+    if data.length == 0
+      return "Error: Dataset is empty"
+    end
     min_value = data[0]
     for i in 1...data.length
       min_value = data[i] if data[i] < min_value
@@ -40,6 +43,9 @@ end
 
 # Method to find the mode of a data set.
 def mode(data)
+    if data.length == 0
+      return "Error: Dataset is empty"
+    end
     frequency = {}
     for i in 0...data.length
       if frequency[data[i]]

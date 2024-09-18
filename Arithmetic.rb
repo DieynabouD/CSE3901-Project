@@ -11,8 +11,11 @@ end
 # This method performs division of two numbers.
 # It raises an exception if the second number is zero.
 def division(a, b)
-  raise "Division by zero" if b == 0
+  if b == 0
+    puts "Division by zero" 
+  else
   a / b
+  end
 end
 
 # This method performs multiplication of two numbers.
@@ -24,4 +27,3 @@ end
 def modulo(a, b)
   a % b
 end
-
