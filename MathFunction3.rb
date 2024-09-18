@@ -1,5 +1,6 @@
-# Method to check whether the number is prime or not. 
-class MathFunction3
+  
+  # Method to check whether the number is prime or not. 
+
   def isPrime(n)
     return false if n <= 1
     return true if n == 2 || n == 3  # 2 and 3 are prime numbers
@@ -67,4 +68,3 @@ class MathFunction3
 
       mode_value
   end
-end
