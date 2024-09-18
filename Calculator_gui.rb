@@ -1,4 +1,3 @@
-
 require 'tk'
 require_relative 'MathFunctions'
 require_relative 'Arithmetic'
@@ -269,6 +268,10 @@ buttons.each do |row|
             command do
               dataset = dataset_var.value.split(',').map(&:to_i)
               mode_value = mode(dataset)
+<<<<<<< HEAD
+=======
+              # Show the result in a message box
+>>>>>>> d4b35b67dc41ee9c8e9ddb4cabff6990256986eb
               Tk.messageBox(
                 'type'    => "ok",
                 'icon'    => "info",

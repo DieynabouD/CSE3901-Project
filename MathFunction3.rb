@@ -60,4 +60,3 @@ def mode(data)
 
     mode_value
 end
-
