@@ -12,7 +12,7 @@ end
 # It raises an exception if the second number is zero.
 def division(a, b)
   if b == 0
-    puts "Division by zero" 
+    "Error: Division by zero is not allowed"
   else
   a / b
   end

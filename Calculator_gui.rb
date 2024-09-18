@@ -28,6 +28,21 @@ TkLabel.new(root, 'textvariable' => result_var, 'font' => 'Arial 15 bold', 'back
 def evaluate_expression(input_var, result_var)
   expression = input_var.value
 
+  # Function to check if the expression contains consecutive operators
+  def valid_expression?(expression)
+    # Return false if there are two consecutive operators (except for negative numbers)
+    !!(/[\+\-\*\/\^%]{2,}/.match(expression)) == false && 
+    # Ensure the expression does not start or end with an operator (except for parentheses)
+    !!(/^[\+\*\/\^%]/.match(expression)) == false && 
+    !!(/[\+\*\/\^%]$/.match(expression)) == false
+  end
+
+  # Check if the expression is valid
+  unless valid_expression?(expression)
+    result_var.value = "Error: Invalid expression"
+    return
+  end
+
   # Function to perform basic arithmetic
   def apply_operator(operator, a, b)
     case operator
@@ -38,7 +53,7 @@ def evaluate_expression(input_var, result_var)
     when '*'
       return multiply(a, b)
     when '/'
-      result = division(result, numbers[i])
+      return division(a, b)  # Division method will handle zero case
     when '^'
       return exponent(a, b)
     when '%'
@@ -61,12 +76,17 @@ def evaluate_expression(input_var, result_var)
   # Function to evaluate expressions without parentheses, considering operator precedence
   def evaluate_basic(expression)
     # Handle multiplication, division, exponentiation, and modulus first (operator precedence)
-    while expression =~ /[\*\^\/%]/
+    while expression =~ /(-?\d+\.?\d*)([\*\^\/%])(-?\d+\.?\d*)/
       expression.gsub!(/(-?\d+\.?\d*)([\*\^\/%])(-?\d+\.?\d*)/) do
         a = $1.to_f
         op = $2
         b = $3.to_f
-        apply_operator(op, a, b)
+        result = apply_operator(op, a, b)
+        
+        # Stop further evaluation if there's an error (e.g., division by zero)
+        return result if result.is_a?(String) && result.include?("Error")
+        
+        result
       end
     end
 
@@ -88,6 +108,7 @@ def evaluate_expression(input_var, result_var)
   result_var.value = "Result: #{result}"
 end
 
+
 # Append to the expression when a button is pressed
 def append_expression(input_var, value)
   input_var.value = input_var.value + value
@@ -99,11 +120,11 @@ def clear_expression(input_var, result_var)
   result_var.value = "Result: "
 end
 
-button_width = 5
+button_width = 10
 button_height = 1
 
 # Create the buttons for the calculator (numbers and operations)
-button_frame = TkFrame.new(root, 'background' => 'pink').pack('side' => 'top', 'fill' => 'x')
+button_frame = TkFrame.new(root, 'background' => 'white').pack('side' => 'top', 'fill' => 'x')
 
 
 # Buttons for digits 1-9, 0, and operators
@@ -302,9 +323,7 @@ buttons.each do |row|
             text "Next"
             command do
               dataset = dataset_var.value.split(',').map(&:to_i)
-              mode_value = Mode(dataset)
               # Show the result in a message box
->>>>>>> d4b35b67dc41ee9c8e9ddb4cabff6990256986eb
               Tk.messageBox(
                 'type'    => "ok",
                 'icon'    => "info",

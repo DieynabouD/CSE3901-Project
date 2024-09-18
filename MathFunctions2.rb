@@ -6,7 +6,7 @@ def factorial(n)
     else
         return n * factorial(n - 1)
     end
-    end
+end
 
 #percentage (a, b) : Calculates what percentage a is of b.
 def percentage(a, b)

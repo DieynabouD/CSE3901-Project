@@ -34,29 +34,25 @@ end
 
 
 
- # #function to generate fibonacci numbers up to a given limit and save them to a file
- def fibonacci(limit,file_path)
+def fibonacci(limit,file_path)
   File.open(file_path,"w") do |file|
-i=1
 a=1
 b=0
 c=0
 if(limit!=0)
-  print "0 1"
-  while(i!=limit)
+  file.write "0 1 "
+  while((a+b)<= limit)
       c=a+b #takes first two numbers and adds them
-      print " #{c}"
       b=a #b goes up to a
       a=c #a goes up to c
-      i=i+1
       file.write "#{c} "
       
   end
 else
-  puts "0"
+  file.write "0"
 end
  end
- end
+end
 
 # Function to convert Fahrenheit to Celsius
 def fahrenheit_to_celsius(f)
