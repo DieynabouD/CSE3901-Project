@@ -6,7 +6,6 @@ require_relative 'MathFunctions2'
 require_relative 'MathFunctions4'
 require_relative 'MathFunction3'
 require_relative 'SquareAndCubeRoots'
-require_relative 'MathFunctions4'
 
 # Create the main window
 root = TkRoot.new { title "Advanced Calculator" }
@@ -41,7 +40,12 @@ def evaluate_expression(input_var, result_var)
     when '*'
       result = multiply(result, numbers[i])
     when '/'
-      result = division(result, numbers[i])
+      if numbers[i] == 0
+        result_var.value = "Error: Division by zero is not allowed"
+        return
+      else
+        result = division(result, numbers[i])
+      end
     when '^'
       result = exponent(result, numbers[i])
     when '%'
@@ -63,24 +67,23 @@ def clear_expression(input_var, result_var)
   result_var.value = "Result: "
 end
 
-button_width = 6
-button_height = 3
+button_width = 5
+button_height = 1
 
 # Create the buttons for the calculator (numbers and operations)
 button_frame = TkFrame.new(root).pack('side' => 'top', 'fill' => 'x')
 
 # Buttons for digits 1-9, 0, and operators
 buttons = [
-  ['7', '8', '9', '/'],
-  ['4', '5', '6', '*'],
-  ['1', '2', '3', '-'],
-  ['0', '.', '=', '+'],
-  ['^', 'sin', 'cos', 'tan'],
-  ['|x|', '%', 'C', 'Evens','log(base,a)'],
+  ['7', '8', '9', '/', 'sin'],
+  ['4', '5', '6', '*', 'cos'],
+  ['1', '2', '3', '-', 'tan'],
+  ['0', '.', '=', '+', 'C'],
+  ['|x|', '%', '^', 'Evens', 'Odds'],
   ['Squares', 'Primes', 'Binary', 'Octal', 'Hexadecimal'], 
-  ['Odds', 'isPrime', 'Min', 'Mode'],
-  ['SquareRoot', 'CubeRoot'], 
-  ['FtoC', 'Median', 'Mean','Fibonacci', 'Max']
+  ['FtoC', 'isPrime', 'Fibonacci', 'log(base,a)', 'Factorial'],
+  ['Mean', 'Min', 'Max', 'Mode', 'Median'],
+  ['SquareRoot', 'CubeRoot', '(', ')']
 ]
 
 buttons.each do |row|
@@ -111,7 +114,11 @@ buttons.each do |row|
           when 'FtoC'
             result_var.value = "Result: #{fahrenheit_to_celsius(input_var.value.to_f)}"
           when 'SquareRoot'
-            result_var.value = "Result: #{squareRoot(input_var.value.to_f)}"
+            if input_var.value.to_f < 0
+              result_var.value = "Error: Square root of a negative number is not allowed"
+            else
+              result_var.value = "Result: #{squareRoot(input_var.value.to_f)}"
+            end
           when 'CubeRoot'
             result_var.value = "Result: #{cubeRoot(input_var.value.to_f)}"
           end
@@ -137,7 +144,6 @@ buttons.each do |row|
                 'defaultextension' => '.txt',
                 'filetypes' => [['Text Files', '*.txt'], ['All Files', '*']]
               )
-
               if file_path
                 generate_square_numbers(start_num_var.value.to_i, end_num_var.value.to_i, file_path)
                 result_var.value = "Square numbers generated and saved to #{file_path}"
@@ -197,7 +203,6 @@ buttons.each do |row|
                 'defaultextension' => '.txt',
                 'filetypes' => [['Text Files', '*.txt'], ['All Files', '*']]
               )
-
               if file_path
                 generate_odd_numbers(start_num_var.value.to_i, end_num_var.value.to_i, file_path)
                 result_var.value = "Odd numbers generated and saved to #{file_path}"
@@ -226,8 +231,25 @@ buttons.each do |row|
                 'type'    => "ok",
                 'icon'    => "info",
                 'title'   => "Minimum",
-                'message' => "The minimum of the datas=et is: #{min_value}"
+                'message' => "The minimum of the dataset is: #{min_value}"
               )
+            end
+          end.pack
+        end
+      when 'Max' # Max button command
+        command do
+          dialog = TkToplevel.new
+          dialog.title = "Find Maximum"
+          TkLabel.new(dialog) { text "Enter Dataset (comma-separated)" }.pack
+          data_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => data_var).pack
+          TkButton.new(dialog) do
+            text "Find Maximum"
+            command do
+              data = data_var.value.split(',').map(&:to_f)
+              max_value = maximum(data)
+              result_var.value = "Maximum: #{max_value}"
+              dialog.destroy
             end
           end.pack
         end
@@ -245,6 +267,7 @@ buttons.each do |row|
             text "Next"
             command do
               dataset = dataset_var.value.split(',').map(&:to_i)
+              mode_value = mode(dataset)
               # Show the result in a message box
               Tk.messageBox(
                 'type'    => "ok",
@@ -252,33 +275,13 @@ buttons.each do |row|
                 'title'   => "Mode Result",
                 'message' => "The mode of the dataset is: #{mode(dataset)}"
               )
-            end
+            end       
           end.pack
         end
       when 'isPrime'
-        # command do
-        #   dialog = TkToplevel.new
-        #   dialog.title = "Check if Prime"
-        #   TkLabel.new(dialog) { text "Enter Starting Number" }.pack
-        #   start_num_var = TkVariable.new
-        #   num_to_check = start_num_var.value.to_i
-          result_var.value = "Result: #{is_prime(input_var.value.to_i)}"
-          # if is_prime(num_to_check)
-          #   Tk.messageBox(
-          #     'type'    => "ok",
-          #     'icon'    => "info",
-          #     'title'   => "Prime Check",
-          #     'message' => "#{num_to_check} is a prime number."
-          #   )
-          # else
-          #   Tk.messageBox(
-          #     'type'    => "ok",
-          #     'icon'    => "warning",
-          #     'title'   => "Prime Check",
-          #     'message' => "#{num_to_check} is not a prime number."
-          #   )
-          # end
-       # end
+        command do
+          result_var.value = "Check is Prime: #{isPrime(input_var.value.to_i)}"
+        end
       when 'log(base,a)'
         command do
           dialog = TkToplevel.new
@@ -327,7 +330,18 @@ buttons.each do |row|
             end
           end.pack
         end
-    
+      when 'Binary'
+        command do
+          result_var.value = "Binary: #{to_binary(input_var.value.to_i)}"
+        end
+      when 'Octal'
+        command do
+          result_var.value = "Octal: #{to_octal(input_var.value.to_i)}"
+        end
+      when 'Hexadecimal'
+        command do
+          result_var.value = "Hexadecimal: #{to_hexadecimal(input_var.value.to_i)}"
+        end
       when 'Fibonacci'
         command do
           dialog = TkToplevel.new
@@ -341,56 +355,18 @@ buttons.each do |row|
             text "Save and Generate Fibonacci"
             command do
               file_path = Tk.getSaveFile(
-                'title' => 'Save primes to file',
+                'title' => 'Save Fibonacci to file',
                 'defaultextension' => '.txt',
                 'filetypes' => [['Text Files', '*.txt'], ['All Files', '*']]
               )
       
               if file_path
                 fibonacci(lim_num_var.value.to_i, file_path)
-                result_var.value = "Prime numbers generated and saved to #{file_path}"
+                result_var.value = "Fibonacci sequence generated and saved to #{file_path}"
               end
               dialog.destroy
             end
           end.pack
-        end
-      when 'Primes'
-        command do
-          dialog = TkToplevel.new
-          dialog.title = "Generate Primes"
-
-          TkLabel.new(dialog) { text "Enter Maximum Number" }.pack
-          max_num_var = TkVariable.new
-          TkEntry.new(dialog, 'textvariable' => max_num_var).pack
-
-          TkButton.new(dialog) do
-            text "Save and Generate Primes"
-            command do
-              file_path = Tk.getSaveFile(
-                'title' => 'Save primes to file',
-                'defaultextension' => '.txt',
-                'filetypes' => [['Text Files', '*.txt'], ['All Files', '*']]
-              )
-
-              if file_path
-                generate_primes(max_num_var.value.to_i, file_path)
-                result_var.value = "Prime numbers generated and saved to #{file_path}"
-              end
-              dialog.destroy
-            end
-          end.pack
-        end
-      when 'Binary'
-        command do
-          result_var.value = "Binary: #{to_binary(input_var.value.to_i)}"
-        end
-      when 'Octal'
-        command do
-          result_var.value = "Octal: #{to_octal(input_var.value.to_i)}"
-        end
-      when 'Hexadecimal'
-        command do
-          result_var.value = "Hexadecimal: #{to_hexadecimal(input_var.value.to_i)}"
         end
       when 'Median' # Median button command
         command do
@@ -411,7 +387,6 @@ buttons.each do |row|
             end
           end.pack
         end
-
       when 'Mean' # Mean button command
         command do
           dialog = TkToplevel.new
@@ -427,6 +402,57 @@ buttons.each do |row|
               data = data_var.value.split(',').map(&:to_f)
               mean_value = mean(data)
               result_var.value = "Mean: #{mean_value}"
+              dialog.destroy
+            end
+          end.pack
+        end
+      when 'Factorial' 
+        command do
+          dialog = TkToplevel.new
+          dialog.title = "Calculate Factorial"
+
+          TkLabel.new(dialog) { text "Enter a Non-Negative Integer" }.pack
+          n_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => n_var).pack
+
+          TkButton.new(dialog) do
+            text "Calculate Factorial"
+            command do
+              n = n_var.value.to_i
+              if n < 0
+                error_dialog = TkToplevel.new
+                error_dialog.title = "Error"
+                TkLabel.new(error_dialog) { text "Error: Please enter a non-negative number." }.pack
+                TkButton.new(error_dialog) do
+                  text "OK"
+                  command { error_dialog.destroy }
+                end.pack
+              else
+                result_var.value = "Factorial: #{factorial(n)}"
+                dialog.destroy
+              end
+            end
+          end.pack
+        end
+      when '%'
+        command do
+          dialog = TkToplevel.new
+          dialog.title = "Calculate Percentage"
+
+          TkLabel.new(dialog) { text "Enter Value (a)" }.pack
+          a_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => a_var).pack
+
+          TkLabel.new(dialog) { text "Enter Value (b)" }.pack
+          b_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => b_var).pack
+
+          TkButton.new(dialog) do
+            text "Calculate Percentage"
+            command do
+              a = a_var.value.to_f
+              b = b_var.value.to_f
+              result_var.value = "Percentage: #{percentage(a, b)}%"
               dialog.destroy
             end
           end.pack
