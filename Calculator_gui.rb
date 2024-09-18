@@ -3,95 +3,159 @@ require_relative 'MathFunctions'
 require_relative 'Arithmetic'
 require_relative 'BuiltMathFunctions'
 require_relative 'MathFunctions2'
-
+require_relative 'MathFunctions4'
+require_relative 'SquareAndCubeRoots'
+require_relative 'MathFunction3'
 # Create the main window
-root = TkRoot.new { title "Advanced Calculator" }
+
+root = TkRoot.new { title "Advanced Calculator" 
+background "pink" }
 root.minsize(600, 800)
 
 # Create a text variable to hold the expression entered by the user
 input_var = TkVariable.new
 
 # Create a label to display the result
-result_var = TkVariable.new("Result: ")
+result_var = TkVariable.new("Result: ") 
 
 # Entry field where the user enters the expression
-TkEntry.new(root, 'textvariable' => input_var, 'font' => 'Arial 20', 'justify' => 'right').pack('side' => 'top', 'fill' => 'x')
+TkEntry.new(root, 'textvariable' => input_var, 'font' => 'Arial 15 bold', 'justify' => 'right').pack('side' => 'top', 'fill' => 'x')
 
 # Label to show the result
-TkLabel.new(root, 'textvariable' => result_var, 'font' => 'Arial 20').pack('side' => 'top')
+TkLabel.new(root, 'textvariable' => result_var, 'font' => 'Arial 15 bold', 'background' => 'pink' ).pack('side' => 'top')
 
-# evaluate basic arithmetic expressions
+# Evaluate expressions, including handling parentheses and operator precedence
 def evaluate_expression(input_var, result_var)
   expression = input_var.value
-  numbers = expression.scan(/\d+\.?\d*/).map(&:to_f)  # Extract numbers as floats
-  operators = expression.scan(/[\+\-\*\/\^\%]/)  # Extract operators, including ^ and %
-  result = numbers.shift  # Initialize the result with the first number
 
-  operators.each_with_index do |op, i|
-    case op
+  # Function to check if the expression contains consecutive operators
+  def valid_expression?(expression)
+    # Return false if there are two consecutive operators (except for negative numbers)
+    !!(/[\+\-\*\/\^%]{2,}/.match(expression)) == false && 
+    # Ensure the expression does not start or end with an operator (except for parentheses)
+    !!(/^[\+\*\/\^%]/.match(expression)) == false && 
+    !!(/[\+\*\/\^%]$/.match(expression)) == false
+  end
+
+  # Check if the expression is valid
+  unless valid_expression?(expression)
+    result_var.value = "Error: Invalid expression"
+    return
+  end
+
+  # Function to perform basic arithmetic
+  def apply_operator(operator, a, b)
+    case operator
     when '+'
-      result = addition(result, numbers[i])
+      return addition(a, b)
     when '-'
-      result = subtraction(result, numbers[i])
+      return subtraction(a, b)
     when '*'
-      result = multiply(result, numbers[i])
+      return multiply(a, b)
     when '/'
-      result = division(result, numbers[i])
+      return division(a, b)  # Division method will handle zero case
     when '^'
-      result = exponent(result, numbers[i])
+      return exponent(a, b)
     when '%'
-      result = modulo(result, numbers[i])
+      return modulo(a, b)
+    else
+      raise "Unsupported operator #{operator}"
     end
   end
 
-  # Display the result
+  # Function to handle parentheses recursively
+  def evaluate_parentheses(expression)
+    while expression.include?('(')
+      expression.sub!(/\([^()]*\)/) do |sub_expr|
+        evaluate_basic(sub_expr[1..-2])  # Remove parentheses and evaluate
+      end
+    end
+    evaluate_basic(expression)  # Evaluate the remaining expression
+  end
+
+  # Function to evaluate expressions without parentheses, considering operator precedence
+  def evaluate_basic(expression)
+    # Handle multiplication, division, exponentiation, and modulus first (operator precedence)
+    while expression =~ /(-?\d+\.?\d*)([\*\^\/%])(-?\d+\.?\d*)/
+      expression.gsub!(/(-?\d+\.?\d*)([\*\^\/%])(-?\d+\.?\d*)/) do
+        a = $1.to_f
+        op = $2
+        b = $3.to_f
+        result = apply_operator(op, a, b)
+        
+        # Stop further evaluation if there's an error (e.g., division by zero)
+        return result if result.is_a?(String) && result.include?("Error")
+        
+        result
+      end
+    end
+
+    # Handle arithmetic addition and subtraction
+    while expression =~ /(-?\d+\.?\d*)([\+\-])(-?\d+\.?\d*)/
+      expression.gsub!(/(-?\d+\.?\d*)([\+\-])(-?\d+\.?\d*)/) do
+        a = $1.to_f
+        op = $2
+        b = $3.to_f
+        apply_operator(op, a, b)
+      end
+    end
+
+    expression.to_f
+  end
+
+  # Start by evaluating parentheses, then the rest
+  result = evaluate_parentheses(expression)
   result_var.value = "Result: #{result}"
 end
 
-# append to the expression when a button is pressed
+
+# Append to the expression when a button is pressed
 def append_expression(input_var, value)
   input_var.value = input_var.value + value
 end
 
-# clear the expression
+# Clear the expression
 def clear_expression(input_var, result_var)
   input_var.value = ""
   result_var.value = "Result: "
 end
 
-button_width = 6
-button_height = 3
+button_width = 10
+button_height = 1
 
 # Create the buttons for the calculator (numbers and operations)
-button_frame = TkFrame.new(root).pack('side' => 'top', 'fill' => 'x')
+button_frame = TkFrame.new(root, 'background' => 'white').pack('side' => 'top', 'fill' => 'x')
+
 
 # Buttons for digits 1-9, 0, and operators
 buttons = [
-  ['7', '8', '9', '/'],
-  ['4', '5', '6', '*'],
-  ['1', '2', '3', '-'],
-  ['0', '.', '=', '+'],
-  ['^', 'sin', 'cos', 'tan'],
-  ['|x|', '%', 'C', 'Even'],
-  ['Squares', 'Primes', 'Binary', 'Octal', 'Hexadecimal'],
-  ['Median', 'Factorial']
+  ['7', '8', '9', '/', 'sin'],
+  ['4', '5', '6', '*', 'cos'],
+  ['1', '2', '3', '-', 'tan'],
+  ['0', '.', '=', '+', 'C'],
+  ['|x|', '%', '^', 'Evens', 'Odds'],
+  ['Squares', 'Primes', 'Binary', 'Octal', 'Hexadecimal'], 
+  ['FtoC', 'isPrime', 'Fibonacci', 'log(base,a)'],
+  ['Mean', 'Min', 'Max', 'Modes', 'Median'],
+  ['SquareRoot', 'CubeRoot', '(', ')']
 ]
 
 buttons.each do |row|
-  row_frame = TkFrame.new(button_frame).pack('side' => 'top', 'fill' => 'x')
+  row_frame = TkFrame.new(button_frame, 'background' => 'pink').pack('side' => 'top', 'fill' => 'x')
   row.each do |char|
     TkButton.new(row_frame) do
       text char
       width button_width
       height button_height
-      font 'Arial 20'
+      font 'Arial 15'
+      background 'light pink'
 
       case char
       when '='
         command { evaluate_expression(input_var, result_var) }
       when 'C'
         command { clear_expression(input_var, result_var) }
-      when 'sin', 'cos', 'tan', '|x|', 'Square', 'Even'
+      when 'sin', 'cos', 'tan', '|x|', 'FtoC', 'SquareRoot', 'CubeRoot'
         command do
           case char
           when 'sin'
@@ -100,9 +164,18 @@ buttons.each do |row|
             result_var.value = "Result: #{cos(input_var.value.to_f)}"
           when 'tan'
             result_var.value = "Result: #{tan(input_var.value.to_f)}"
-
           when '|x|'
             result_var.value = "Result: #{absolute(input_var.value.to_f)}"
+          when 'FtoC'
+            result_var.value = "Result: #{fahrenheit_to_celsius(input_var.value.to_f)}"
+          when 'SquareRoot'
+            if input_var.value.to_f < 0
+              result_var.value = "Error: Square root of a negative number is not allowed"
+            else
+              result_var.value = "Result: #{squareRoot(input_var.value.to_f)}"
+            end
+          when 'CubeRoot'
+            result_var.value = "Result: #{cubeRoot(input_var.value.to_f)}"
           end
         end
       when 'Squares'
@@ -126,11 +199,163 @@ buttons.each do |row|
                 'defaultextension' => '.txt',
                 'filetypes' => [['Text Files', '*.txt'], ['All Files', '*']]
               )
-
               if file_path
                 generate_square_numbers(start_num_var.value.to_i, end_num_var.value.to_i, file_path)
                 result_var.value = "Square numbers generated and saved to #{file_path}"
               end
+              dialog.destroy
+            end
+          end.pack
+        end
+      when 'Evens'
+        command do
+          dialog = TkToplevel.new
+          dialog.title = "Generate Even Numbers"
+
+          TkLabel.new(dialog) { text "Enter Starting Number" }.pack
+          start_num_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => start_num_var).pack
+
+          TkLabel.new(dialog) { text "Enter Ending Number" }.pack
+          end_num_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => end_num_var).pack
+
+          TkButton.new(dialog) do
+            text "Save and Generate Evens"
+            command do
+              file_path = Tk.getSaveFile(
+                'title' => 'Save evens to file',
+                'defaultextension' => '.txt',
+                'filetypes' => [['Text Files', '*.txt'], ['All Files', '*']]
+              )
+
+              if file_path
+                generate_even_numbers(start_num_var.value.to_i, end_num_var.value.to_i, file_path)
+                result_var.value = "Even numbers generated and saved to #{file_path}"
+              end
+              dialog.destroy
+            end
+          end.pack
+        end
+      #when odd button is clicked
+      when 'Odds' 
+        command do
+          dialog = TkToplevel.new
+          dialog.title = "Generate Odd Numbers"
+
+          TkLabel.new(dialog) { text "Enter Starting Number" }.pack
+          start_num_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => start_num_var).pack
+
+          TkLabel.new(dialog) { text "Enter Ending Number" }.pack
+          end_num_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => end_num_var).pack
+
+          TkButton.new(dialog) do
+            text "Save and Generate Odds"
+            command do
+              file_path = Tk.getSaveFile(
+                'title' => 'Save odds to file',
+                'defaultextension' => '.txt',
+                'filetypes' => [['Text Files', '*.txt'], ['All Files', '*']]
+              )
+              if file_path
+                generateOddNumbers(start_num_var.value.to_i, end_num_var.value.to_i, file_path)
+                result_var.value = "Odd numbers generated and saved to #{file_path}"
+              end
+              dialog.destroy
+            end
+          end.pack
+        end
+      when 'Min'
+        command do
+          # Create a new dialog to prompt for dataset input
+          dialog = TkToplevel.new
+          dialog.title = "Enter your dataset"
+          # Label and entry for dataset input
+          TkLabel.new(dialog) { text "Enter numbers separated by commas:" }.pack
+          dataset_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => dataset_var).pack
+          # "Next" button to calculate the mode
+          TkButton.new(dialog) do
+            text "Next"
+            command do
+              dataset = dataset_var.value.split(',').map(&:to_i)
+              min_value = minimum(dataset)
+              # Show the result in a message box
+              Tk.messageBox(
+                'type'    => "ok",
+                'icon'    => "info",
+                'title'   => "Minimum",
+                'message' => "The minimum of the dataset is: #{min_value}"
+              )
+            end
+          end.pack
+        end
+      when 'Max' # Max button command
+        command do
+          dialog = TkToplevel.new
+          dialog.title = "Find Maximum"
+          TkLabel.new(dialog) { text "Enter Dataset (comma-separated)" }.pack
+          data_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => data_var).pack
+          TkButton.new(dialog) do
+            text "Find Maximum"
+            command do
+              data = data_var.value.split(',').map(&:to_f)
+              max_value = maximum(data)
+              result_var.value = "Maximum: #{max_value}"
+              dialog.destroy
+            end
+          end.pack
+        end
+      when 'Modes'
+        command do
+          # Create a new dialog to prompt for dataset input
+          dialog = TkToplevel.new
+          dialog.title = "Enter your dataset"
+          # Label and entry for dataset input
+          TkLabel.new(dialog) { text "Enter numbers separated by commas:" }.pack
+          dataset_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => dataset_var).pack
+          # "Next" button to calculate the mode
+          TkButton.new(dialog) do
+            text "Next"
+            command do
+              dataset = dataset_var.value.split(',').map(&:to_i)
+              # Show the result in a message box
+              Tk.messageBox(
+                'type'    => "ok",
+                'icon'    => "info",
+                'title'   => "Mode Result",
+                'message' => "The mode of the dataset is: #{mode(dataset)}"
+              )
+            end       
+          end.pack
+        end
+      # when 'Primes'
+      when 'isPrime'
+        command do
+          result_var.value = "Check is Prime: #{isPrime(input_var.value.to_i)}"
+        end
+      when 'log(base,a)'
+        command do
+          dialog = TkToplevel.new
+          dialog.title = "Calculate log with base"
+
+          TkLabel.new(dialog) { text "Enter Base Number" }.pack
+          start_num_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => start_num_var).pack
+
+          TkLabel.new(dialog) { text "Enter Second Number" }.pack
+          end_num_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => end_num_var).pack
+
+          TkButton.new(dialog) do
+            text "Calculate"
+            command do
+                result_var.value = "#{log_with_base(end_num_var.value.to_f, start_num_var.value.to_f)}"
+
               dialog.destroy
             end
           end.pack
@@ -143,7 +368,7 @@ buttons.each do |row|
           TkLabel.new(dialog) { text "Enter Maximum Number" }.pack
           max_num_var = TkVariable.new
           TkEntry.new(dialog, 'textvariable' => max_num_var).pack
-
+          # Button to save and generate prime numbers
           TkButton.new(dialog) do
             text "Save and Generate Primes"
             command do
@@ -173,7 +398,33 @@ buttons.each do |row|
         command do
           result_var.value = "Hexadecimal: #{to_hexadecimal(input_var.value.to_i)}"
         end
-      when 'Median'
+      when 'Fibonacci'
+        command do
+          dialog = TkToplevel.new
+          dialog.title = "Generate Fibonacci sequence up to limit"
+      
+          TkLabel.new(dialog) { text "Enter Limit Number" }.pack
+          lim_num_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => lim_num_var).pack
+      
+          TkButton.new(dialog) do
+            text "Save and Generate Fibonacci"
+            command do
+              file_path = Tk.getSaveFile(
+                'title' => 'Save Fibonacci to file',
+                'defaultextension' => '.txt',
+                'filetypes' => [['Text Files', '*.txt'], ['All Files', '*']]
+              )
+      
+              if file_path
+                fibonacci(lim_num_var.value.to_i, file_path)
+                result_var.value = "Fibonacci sequence generated and saved to #{file_path}"
+              end
+              dialog.destroy
+            end
+          end.pack
+        end
+      when 'Median' # Median button command
         command do
           dialog = TkToplevel.new
           dialog.title = "Calculate Median"
@@ -188,6 +439,25 @@ buttons.each do |row|
               data = data_var.value.split(',').map(&:to_f)
               median_value = median(data)
               result_var.value = "Median: #{median_value}"
+              dialog.destroy
+            end
+          end.pack
+        end
+      when 'Mean' # Mean button command
+        command do
+          dialog = TkToplevel.new
+          dialog.title = "Calculate Mean"
+
+          TkLabel.new(dialog) { text "Enter Dataset (comma-separated)" }.pack
+          data_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => data_var).pack
+
+          TkButton.new(dialog) do
+            text "Calculate Mean"
+            command do
+              data = data_var.value.split(',').map(&:to_f)
+              mean_value = mean(data)
+              result_var.value = "Mean: #{mean_value}"
               dialog.destroy
             end
           end.pack
@@ -240,37 +510,4 @@ buttons.each do |row|
   end
 end
 
-# File operations
-TkLabel.new(root) { text "File Operations" }.pack
-
-start_var = TkVariable.new
-stop_var = TkVariable.new
-file_path_var = TkVariable.new
-
-TkLabel.new(root) { text "Start Number" }.pack
-TkEntry.new(root, 'textvariable' => start_var).pack
-
-TkLabel.new(root) { text "Stop Number" }.pack
-TkEntry.new(root, 'textvariable' => stop_var).pack
-
-TkLabel.new(root) { text "File Path" }.pack
-TkEntry.new(root, 'textvariable' => file_path_var).pack
-
-file_operations = {
-  "Generate Square Numbers" => :generate_square_numbers,
-  "Generate Even Numbers" => :generate_even_numbers,
-  "Generate Prime Numbers" => :generate_primes
-}
-
-file_operations.each do |operation_name, operation|
-  TkButton.new(root) do
-    text operation_name
-    command {
-      send(operation, start_var.to_i, stop_var.to_i, file_path_var.value)
-      result_var.value = "Generated #{operation_name}"
-    }
-  end.pack
-end
-
-# Start the Tk main loop
 Tk.mainloop
