@@ -1,5 +1,3 @@
-
-
 require 'tk'
 require_relative 'MathFunctions'
 require_relative 'Arithmetic'
@@ -33,7 +31,7 @@ def evaluate_expression(input_var, result_var)
   numbers = expression.scan(/\d+\.?\d*/).map(&:to_f)  # Extract numbers as floats
   operators = expression.scan(/[\+\-\*\/\^\%]/)  # Extract operators, including ^ and %
   result = numbers.shift  # Initialize the result with the first number
-end
+  
   operators.each_with_index do |op, i|
     case op
     when '+'
@@ -51,7 +49,6 @@ end
     end
   end
 
-  # Display the result
   result_var.value = "Result: #{result}"
 end
 
@@ -73,7 +70,7 @@ button_height = 3
 button_frame = TkFrame.new(root).pack('side' => 'top', 'fill' => 'x')
 
 # Buttons for digits 1-9, 0, and operators
-buttons = 
+buttons = [
   ['7', '8', '9', '/'],
   ['4', '5', '6', '*'],
   ['1', '2', '3', '-'],
@@ -81,10 +78,10 @@ buttons =
   ['^', 'sin', 'cos', 'tan'],
   ['|x|', '%', 'C', 'Evens','log(base,a)'],
   ['Squares', 'Primes', 'Binary', 'Octal', 'Hexadecimal'], 
-  ['FtoC', 'Median', 'Mean','Fibonacci', 'Max'],
   ['Odds', 'isPrime', 'Min', 'Mode'],
-  ['SquareRoot', 'CubeRoot']
-  
+  ['SquareRoot', 'CubeRoot'], 
+  ['FtoC', 'Median', 'Mean','Fibonacci', 'Max']
+]
 
 buttons.each do |row|
   row_frame = TkFrame.new(button_frame).pack('side' => 'top', 'fill' => 'x')
@@ -116,13 +113,7 @@ buttons.each do |row|
           when 'SquareRoot'
             result_var.value = "Result: #{squareRoot(input_var.value.to_f)}"
           when 'CubeRoot'
-            result_Var.value = "Result: #{cubeRoot(input_var.value.to_f)}"
-
-          when '|x|'
-            result_var.value = "Result: #{absolute(input_var.value.to_f)}"
-          
-          when 'FtoC'
-            result_var.value = "Result: #{fahrenheit_to_celsius(input_var.value.to_f)}"
+            result_var.value = "Result: #{cubeRoot(input_var.value.to_f)}"
           end
         end
       when 'Squares'
@@ -208,7 +199,7 @@ buttons.each do |row|
               )
 
               if file_path
-                generateOddNumbers(start_num_var.value.to_i, end_num_var.value.to_i, file_path)
+                generate_odd_numbers(start_num_var.value.to_i, end_num_var.value.to_i, file_path)
                 result_var.value = "Odd numbers generated and saved to #{file_path}"
               end
               dialog.destroy
@@ -254,38 +245,40 @@ buttons.each do |row|
             text "Next"
             command do
               dataset = dataset_var.value.split(',').map(&:to_i)
-              mode_value = Mode(dataset)
               # Show the result in a message box
               Tk.messageBox(
                 'type'    => "ok",
                 'icon'    => "info",
                 'title'   => "Mode Result",
-                'message' => "The mode of the dataset is: #{mode_value}"
+                'message' => "The mode of the dataset is: #{mode(dataset)}"
               )
             end
           end.pack
         end
       when 'isPrime'
-        command do
-          dialog = TkToplevel.new
-          dialog.title = "Check if Prime"
-          num_to_check = start_num_var.value.to_i
-          if isPrime(num_to_check)
-            Tk.messageBox(
-              'type'    => "ok",
-              'icon'    => "info",
-              'title'   => "Prime Check",
-              'message' => "#{num_to_check} is a prime number."
-            )
-          else
-            Tk.messageBox(
-              'type'    => "ok",
-              'icon'    => "warning",
-              'title'   => "Prime Check",
-              'message' => "#{num_to_check} is not a prime number."
-            )
-          end
-        end
+        # command do
+        #   dialog = TkToplevel.new
+        #   dialog.title = "Check if Prime"
+        #   TkLabel.new(dialog) { text "Enter Starting Number" }.pack
+        #   start_num_var = TkVariable.new
+        #   num_to_check = start_num_var.value.to_i
+          result_var.value = "Result: #{is_prime(input_var.value.to_i)}"
+          # if is_prime(num_to_check)
+          #   Tk.messageBox(
+          #     'type'    => "ok",
+          #     'icon'    => "info",
+          #     'title'   => "Prime Check",
+          #     'message' => "#{num_to_check} is a prime number."
+          #   )
+          # else
+          #   Tk.messageBox(
+          #     'type'    => "ok",
+          #     'icon'    => "warning",
+          #     'title'   => "Prime Check",
+          #     'message' => "#{num_to_check} is not a prime number."
+          #   )
+          # end
+       # end
       when 'log(base,a)'
         command do
           dialog = TkToplevel.new
@@ -334,28 +327,7 @@ buttons.each do |row|
             end
           end.pack
         end
-      when 'log(base,a)'
-        command do
-          dialog = TkToplevel.new
-          dialog.title = "Calculate log with base"
-
-          TkLabel.new(dialog) { text "Enter Base Number" }.pack
-          start_num_var = TkVariable.new
-          TkEntry.new(dialog, 'textvariable' => start_num_var).pack
-
-          TkLabel.new(dialog) { text "Enter Second Number" }.pack
-          end_num_var = TkVariable.new
-          TkEntry.new(dialog, 'textvariable' => end_num_var).pack
-
-          TkButton.new(dialog) do
-            text "Calculate"
-            command do
-                result_var.value = "#{log_with_base(end_num_var.value.to_f, start_num_var.value.to_f)}"
-
-              dialog.destroy
-            end
-          end.pack
-        end
+    
       when 'Fibonacci'
         command do
           dialog = TkToplevel.new
