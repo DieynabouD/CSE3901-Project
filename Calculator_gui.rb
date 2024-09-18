@@ -38,11 +38,7 @@ def evaluate_expression(input_var, result_var)
     when '*'
       return multiply(a, b)
     when '/'
-      if b == 0
-        raise "Division by zero"
-      else
-      return division(a, b)
-      end
+      result = division(result, numbers[i])
     when '^'
       return exponent(a, b)
     when '%'
@@ -103,8 +99,8 @@ def clear_expression(input_var, result_var)
   result_var.value = "Result: "
 end
 
-button_width = 6
-button_height = 3
+button_width = 5
+button_height = 1
 
 # Create the buttons for the calculator (numbers and operations)
 button_frame = TkFrame.new(root, 'background' => 'pink').pack('side' => 'top', 'fill' => 'x')
@@ -152,7 +148,11 @@ buttons.each do |row|
           when 'FtoC'
             result_var.value = "Result: #{fahrenheit_to_celsius(input_var.value.to_f)}"
           when 'SquareRoot'
-            result_var.value = "Result: #{squareRoot(input_var.value.to_f)}"
+            if input_var.value.to_f < 0
+              result_var.value = "Error: Square root of a negative number is not allowed"
+            else
+              result_var.value = "Result: #{squareRoot(input_var.value.to_f)}"
+            end
           when 'CubeRoot'
             result_var.value = "Result: #{cubeRoot(input_var.value.to_f)}"
           end
@@ -238,7 +238,6 @@ buttons.each do |row|
                 'defaultextension' => '.txt',
                 'filetypes' => [['Text Files', '*.txt'], ['All Files', '*']]
               )
-
               if file_path
                 generateOddNumbers(start_num_var.value.to_i, end_num_var.value.to_i, file_path)
                 result_var.value = "Odd numbers generated and saved to #{file_path}"
@@ -279,7 +278,6 @@ buttons.each do |row|
           TkLabel.new(dialog) { text "Enter Dataset (comma-separated)" }.pack
           data_var = TkVariable.new
           TkEntry.new(dialog, 'textvariable' => data_var).pack
-
           TkButton.new(dialog) do
             text "Find Maximum"
             command do
@@ -304,14 +302,16 @@ buttons.each do |row|
             text "Next"
             command do
               dataset = dataset_var.value.split(',').map(&:to_i)
+              mode_value = Mode(dataset)
               # Show the result in a message box
+>>>>>>> d4b35b67dc41ee9c8e9ddb4cabff6990256986eb
               Tk.messageBox(
                 'type'    => "ok",
                 'icon'    => "info",
                 'title'   => "Mode Result",
                 'message' => "The mode of the dataset is: #{mode(dataset)}"
               )
-            end
+            end       
           end.pack
         end
       # when 'Primes'
@@ -439,6 +439,47 @@ buttons.each do |row|
               data = data_var.value.split(',').map(&:to_f)
               mean_value = mean(data)
               result_var.value = "Mean: #{mean_value}"
+              dialog.destroy
+            end
+          end.pack
+        end
+      when 'Factorial' 
+        command do
+          dialog = TkToplevel.new
+          dialog.title = "Calculate Factorial"
+
+          TkLabel.new(dialog) { text "Enter a Non-Negative Integer" }.pack
+          n_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => n_var).pack
+
+          TkButton.new(dialog) do
+            text "Calculate Factorial"
+            command do
+              n = n_var.value.to_i
+              result_var.value = "Factorial: #{factorial(n)}"
+              dialog.destroy
+            end
+          end.pack
+        end
+      when '%'
+        command do
+          dialog = TkToplevel.new
+          dialog.title = "Calculate Percentage"
+
+          TkLabel.new(dialog) { text "Enter Value (a)" }.pack
+          a_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => a_var).pack
+
+          TkLabel.new(dialog) { text "Enter Value (b)" }.pack
+          b_var = TkVariable.new
+          TkEntry.new(dialog, 'textvariable' => b_var).pack
+
+          TkButton.new(dialog) do
+            text "Calculate Percentage"
+            command do
+              a = a_var.value.to_f
+              b = b_var.value.to_f
+              result_var.value = "Percentage: #{percentage(a, b)}%"
               dialog.destroy
             end
           end.pack
