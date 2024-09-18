@@ -328,3 +328,45 @@ end
 
 # Start the Tk main loop
 Tk.mainloop
+
+
+
+# # Function to handle parentheses recursively
+# def evaluate_parentheses(expression)
+#   while expression.include?('(')
+#     expression.sub!(/\([^()]*\)/) do |sub_expr|
+#       evaluate_basic(sub_expr[1..-2])  # Remove parentheses and evaluate
+#     end
+#   end
+#   evaluate_basic(expression)  # Evaluate the remaining expression
+# end
+
+# # Function to evaluate expressions without parentheses, considering operator precedence
+# def evaluate_basic(expression)
+#   # Handle multiplication, division, exponentiation, and modulus first (operator precedence)
+#   while expression =~ /[\*\^\/%]/
+#     expression.gsub!(/(-?\d+\.?\d*)([\*\^\/%])(-?\d+\.?\d*)/) do
+#       a = $1.to_f
+#       op = $2
+#       b = $3.to_f
+#       apply_operator(op, a, b)
+#     end
+#   end
+
+#   # Handle arithmetic addition and subtraction
+#   while expression =~ /(-?\d+\.?\d*)([\+\-])(-?\d+\.?\d*)/
+#     expression.gsub!(/(-?\d+\.?\d*)([\+\-])(-?\d+\.?\d*)/) do
+#       a = $1.to_f
+#       op = $2
+#       b = $3.to_f
+#       apply_operator(op, a, b)
+#     end
+#   end
+
+#   expression.to_f
+# end
+
+# # Start by evaluating parentheses, then the rest
+# result = evaluate_parentheses(expression)
+# result_var.value = "Result: #{result}"
+# end
